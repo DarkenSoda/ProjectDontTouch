@@ -129,7 +129,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Hook"",
+                    ""name"": ""Swing"",
                     ""type"": ""Button"",
                     ""id"": ""23c3aa71-e9fc-4def-8aad-0687d4e6c7eb"",
                     ""expectedControlType"": ""Button"",
@@ -157,7 +157,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Hook"",
+                    ""action"": ""Swing"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -173,7 +173,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         // Abilities
         m_Abilities = asset.FindActionMap("Abilities", throwIfNotFound: true);
         m_Abilities_Dash = m_Abilities.FindAction("Dash", throwIfNotFound: true);
-        m_Abilities_Hook = m_Abilities.FindAction("Hook", throwIfNotFound: true);
+        m_Abilities_Swing = m_Abilities.FindAction("Swing", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -290,13 +290,13 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Abilities;
     private List<IAbilitiesActions> m_AbilitiesActionsCallbackInterfaces = new List<IAbilitiesActions>();
     private readonly InputAction m_Abilities_Dash;
-    private readonly InputAction m_Abilities_Hook;
+    private readonly InputAction m_Abilities_Swing;
     public struct AbilitiesActions
     {
         private @PlayerInputAction m_Wrapper;
         public AbilitiesActions(@PlayerInputAction wrapper) { m_Wrapper = wrapper; }
         public InputAction @Dash => m_Wrapper.m_Abilities_Dash;
-        public InputAction @Hook => m_Wrapper.m_Abilities_Hook;
+        public InputAction @Swing => m_Wrapper.m_Abilities_Swing;
         public InputActionMap Get() { return m_Wrapper.m_Abilities; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -309,9 +309,9 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @Dash.started += instance.OnDash;
             @Dash.performed += instance.OnDash;
             @Dash.canceled += instance.OnDash;
-            @Hook.started += instance.OnHook;
-            @Hook.performed += instance.OnHook;
-            @Hook.canceled += instance.OnHook;
+            @Swing.started += instance.OnSwing;
+            @Swing.performed += instance.OnSwing;
+            @Swing.canceled += instance.OnSwing;
         }
 
         private void UnregisterCallbacks(IAbilitiesActions instance)
@@ -319,9 +319,9 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @Dash.started -= instance.OnDash;
             @Dash.performed -= instance.OnDash;
             @Dash.canceled -= instance.OnDash;
-            @Hook.started -= instance.OnHook;
-            @Hook.performed -= instance.OnHook;
-            @Hook.canceled -= instance.OnHook;
+            @Swing.started -= instance.OnSwing;
+            @Swing.performed -= instance.OnSwing;
+            @Swing.canceled -= instance.OnSwing;
         }
 
         public void RemoveCallbacks(IAbilitiesActions instance)
@@ -347,6 +347,6 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
     public interface IAbilitiesActions
     {
         void OnDash(InputAction.CallbackContext context);
-        void OnHook(InputAction.CallbackContext context);
+        void OnSwing(InputAction.CallbackContext context);
     }
 }
