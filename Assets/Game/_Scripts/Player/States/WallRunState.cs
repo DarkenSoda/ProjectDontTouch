@@ -1,18 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class WallRunState : MonoBehaviour
-{
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+public class WallRunState : BaseState {
+    public WallRunState(PlayerContext context, StateFactory stateFactory) : base(context, stateFactory) {
+        isRootState = true;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    public override void CheckSwitchState() {
+    
+    }
+
+    public override void UpdateState() {
+        CheckSwitchState();
     }
 }
