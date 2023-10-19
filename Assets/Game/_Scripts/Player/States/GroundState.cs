@@ -36,8 +36,6 @@ public class GroundState : BaseState {
     }
 
     public override void UpdateState() {
-        context.DesiredSpeed = context.MoveSpeed;
-
         CheckSwitchState();
     }
 

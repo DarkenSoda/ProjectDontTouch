@@ -2,11 +2,12 @@ using System;
 using System.Collections;
 using Cinemachine;
 using Unity.Mathematics;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody))]
-public class PlayerContext : MonoBehaviour {
+public class PlayerContext : NetworkBehaviour {
     private PlayerInputAction playerInput;
     private Rigidbody rb;
     private Animator anim;
@@ -76,6 +77,22 @@ public class PlayerContext : MonoBehaviour {
     private StateFactory stateFactory;
     #endregion
 
+    public override void OnNetworkSpawn() {
+        if (!IsOwner) {
+            this.enabled = false;
+            return;
+        }
+
+        playerCamera = GameObject.FindGameObjectWithTag("PlayerCamera").GetComponent<Camera>();
+        Camera.main.gameObject.GetComponent<AudioListener>().enabled = false;
+        playerCamera.gameObject.GetComponent<AudioListener>().enabled = true;
+        ThirdPersonCamera thirdPersonCamera = playerCamera.gameObject.GetComponent<ThirdPersonCamera>();
+        thirdPersonCamera.player = this;
+        thirdPersonCamera.freeLookCamera.Follow = transform;
+        thirdPersonCamera.freeLookCamera.LookAt = transform;
+        playerCamera.depth = 1;
+    }
+
     private void Awake() {
         anim = GetComponentInChildren<Animator>();
         rb = GetComponent<Rigidbody>();
@@ -112,9 +129,11 @@ public class PlayerContext : MonoBehaviour {
         if (Mathf.Abs(DesiredSpeed - LastDesiredSpeed) > minSpeedDifference && CurrentSpeed != 0) {
             StopCoroutine(SmoothlyLerpSpeed());
             StartCoroutine(SmoothlyLerpSpeed());
-        }else {
+        } else {
             CurrentSpeed = DesiredSpeed;
         }
+
+        LastDesiredSpeed = DesiredSpeed;
     }
 
     private void FixedUpdate() {
@@ -143,7 +162,7 @@ public class PlayerContext : MonoBehaviour {
         float difference = Mathf.Abs(DesiredSpeed - CurrentSpeed);
         float startValue = CurrentSpeed;
 
-        while(time<difference) {
+        while (time < difference) {
             CurrentSpeed = Mathf.Lerp(startValue, DesiredSpeed, time / difference);
             time += Time.deltaTime;
             yield return null;

@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 
 public class DashState : BaseState {
     private float startTime;
+    private Vector3 direction;
 
     public DashState(PlayerContext context, StateFactory stateFactory) : base(context, stateFactory) {
         isRootState = true;
@@ -37,7 +38,7 @@ public class DashState : BaseState {
     }
 
     public override void UpdateState() {
-        context.visuals.DOLookAt(context.visuals.position + context.orientation.forward, .2f, AxisConstraint.Y);
+        context.visuals.DOLookAt(context.visuals.position + direction, .2f, AxisConstraint.Y);
 
         if (Time.time - startTime > context.DashDuration) {
             CheckSwitchState();
@@ -46,14 +47,20 @@ public class DashState : BaseState {
 
     public override void ExitState() {
         context.RB.useGravity = true;
+        context.DashCooldown = context.DashCooldownMax;
     }
 
     private void Dash() {
-        context.RB.velocity = new Vector3(context.RB.velocity.x, 0, context.RB.velocity.z);
+        direction = context.MoveDir;
+        if (direction == Vector3.zero) {
+            direction = context.orientation.forward * context.DashPower + context.orientation.up * context.VerticalDashPower;
+        } else {
+            direction.y = 0;
+            direction = direction.normalized * context.DashPower;
+            direction.y = context.VerticalDashPower;
+        }
 
-        Vector3 direction = context.orientation.forward * context.DashPower + context.orientation.up * context.VerticalDashPower;
+        context.RB.velocity = Vector3.zero;
         context.RB.AddForce(direction, ForceMode.Impulse);
-
-        context.DashCooldown = context.DashCooldownMax;
     }
 }
