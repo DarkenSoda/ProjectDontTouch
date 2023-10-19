@@ -23,9 +23,9 @@ public class MoveState : BaseState {
 
     private void HandleMovement() {
         if (context.IsGrounded) {
-            context.RB.AddForce(context.MoveDir.normalized * context.MoveSpeed * context.SpeedMultiplier, ForceMode.Force);
+            context.RB.AddForce(context.MoveDir.normalized * context.CurrentSpeed * context.SpeedMultiplier, ForceMode.Force);
         } else {
-            context.RB.AddForce(context.MoveDir.normalized * context.MoveSpeed * context.AirMultiplier * context.SpeedMultiplier, ForceMode.Force);
+            context.RB.AddForce(context.MoveDir.normalized * context.CurrentSpeed * context.AirMultiplier * context.SpeedMultiplier, ForceMode.Force);
         }
     }
 }

@@ -16,6 +16,8 @@ public class FallState : BaseState {
     public override void CheckSwitchState() {
         if(context.IsGrounded) {
             SwitchState(stateFactory.Ground());
+        } else if(context.IsDashingPressed && context.DashCooldown <= 0) {
+            SwitchState(stateFactory.Dash());
         }
 
         // WallRun and WallStand
@@ -24,8 +26,9 @@ public class FallState : BaseState {
     public override void EnterState() {
         InitializeSubState();
 
+        context.RB.drag = 0;
+
         context.Anim.SetBool("IsFalling", true);
-        context.Anim.CrossFade("Falling Idle", .15f, 0, 0);
     }
 
     public override void UpdateState() {

@@ -4,7 +4,8 @@ using System.Collections.Generic;
 public class StateFactory {
     private enum OurStates {
         Idle, Move,
-        Ground, Jump, Fall,
+        Ground, Jump, Fall, 
+        Dash,
         WallRun,
         WallStand,
     }
@@ -18,6 +19,7 @@ public class StateFactory {
         statesDictionary[OurStates.Ground] = new GroundState(context, this);
         statesDictionary[OurStates.Jump] = new JumpState(context, this);
         statesDictionary[OurStates.Fall] = new FallState(context, this);
+        statesDictionary[OurStates.Dash] = new DashState(context, this);
         statesDictionary[OurStates.WallRun] = new WallRunState(context, this);
         statesDictionary[OurStates.WallStand] = new WallStandState(context, this);
     }
@@ -36,6 +38,10 @@ public class StateFactory {
     }
     public BaseState Fall() {
         return statesDictionary[OurStates.Fall];
+    }
+
+    public BaseState Dash() {
+        return statesDictionary[OurStates.Dash];
     }
 
     public BaseState WallRun() {

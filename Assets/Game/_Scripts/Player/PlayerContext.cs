@@ -1,4 +1,7 @@
+using System;
+using System.Collections;
 using Cinemachine;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -16,13 +19,23 @@ public class PlayerContext : MonoBehaviour {
     public Transform orientation;
     public Transform visuals;
 
-    [Header("Movement")]
+    [Header("Momentum Speeds")]
     [SerializeField] private float moveSpeed;
+    [SerializeField] private float dashSpeed;
+    [SerializeField] private float minSpeedDifference;
+
+    [Header("Movement")]
     [SerializeField] private float speedMultiplier;
     [SerializeField] private float airMultiplier;
     [SerializeField] private float jumpForce;
     [SerializeField] private float rotationSpeed;
     [SerializeField] private float groundDrag;
+
+    [Header("Dash")]
+    [SerializeField] private float dashPower;
+    [SerializeField] private float verticalDashPower;
+    [SerializeField] private float dashCooldownMax;
+    [SerializeField] private float dashDuration;
 
     [Header("Ground Detection")]
     [SerializeField] private float checkSphereRadius;
@@ -37,10 +50,17 @@ public class PlayerContext : MonoBehaviour {
     public float AirMultiplier { get => airMultiplier; }
     public float SpeedMultiplier { get => speedMultiplier; }
     public float JumpForce { get => jumpForce; }
+    public float GroundDrag { get => groundDrag; }
+    public float DashSpeed { get => dashSpeed; }
+    public float DashPower { get => dashPower; }
+    public float DashDuration { get => dashDuration; }
+    public float VerticalDashPower { get => verticalDashPower; }
     public float RotationSpeed { get => rotationSpeed; }
+    public float DashCooldownMax { get => dashCooldownMax; }
     public float DashCooldown { get; set; }
     public float CurrentSpeed { get; set; }
     public float DesiredSpeed { get; set; }
+    public float LastDesiredSpeed { get; set; }
     public Vector3 MoveDir { get; set; }
     public bool IsJumpPressed { get; set; }
     public bool RequireNewJumpPress { get; set; }
@@ -73,33 +93,31 @@ public class PlayerContext : MonoBehaviour {
         playerInput.Abilities.Swing.canceled += OnSwing;
     }
 
-    private void Start() {
-        CurrentSpeed = MoveSpeed;
-    }
-
     private void Update() {
+        IsGrounded = Physics.CheckSphere(feet.position, checkSphereRadius, groundLayer);
+
         HandleRotation();
+        SpeedControl();
 
         inputVector = GetMovement();
         MoveDir = orientation.forward * inputVector.y + orientation.right * inputVector.x;
         IsMoving = inputVector != Vector2.zero;
 
-        CurrentState.UpdateStates();
-
-        if (IsGrounded) {
-            rb.drag = groundDrag;
-        } else {
-            rb.drag = 0f;
-        }
-
         // cooldowns
         DashCooldown -= Time.deltaTime;
+
+
+        CurrentState.UpdateStates();
+
+        if (Mathf.Abs(DesiredSpeed - LastDesiredSpeed) > minSpeedDifference && CurrentSpeed != 0) {
+            StopCoroutine(SmoothlyLerpSpeed());
+            StartCoroutine(SmoothlyLerpSpeed());
+        }else {
+            CurrentSpeed = DesiredSpeed;
+        }
     }
 
     private void FixedUpdate() {
-        IsGrounded = Physics.CheckSphere(feet.position, checkSphereRadius, groundLayer);
-
-        SpeedControl();
         CurrentState.FixedUpdateStates();
     }
 
@@ -118,6 +136,20 @@ public class PlayerContext : MonoBehaviour {
             Vector3 limitedVel = velocity.normalized * MoveSpeed;
             rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
         }
+    }
+
+    private IEnumerator SmoothlyLerpSpeed() {
+        float time = 0;
+        float difference = Mathf.Abs(DesiredSpeed - CurrentSpeed);
+        float startValue = CurrentSpeed;
+
+        while(time<difference) {
+            CurrentSpeed = Mathf.Lerp(startValue, DesiredSpeed, time / difference);
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        CurrentSpeed = DesiredSpeed;
     }
 
     public Vector2 GetMovement() {

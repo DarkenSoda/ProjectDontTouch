@@ -20,11 +20,17 @@ public class GroundState : BaseState {
             SwitchState(stateFactory.Jump());
         } else if (!context.IsGrounded) {
             SwitchState(stateFactory.Fall());
+        } else if (context.IsDashingPressed && context.DashCooldown <= 0) {
+            SwitchState(stateFactory.Dash());
         }
     }
 
     public override void EnterState() {
         InitializeSubState();
+
+        context.RB.drag = context.GroundDrag;
+
+        context.DesiredSpeed = context.MoveSpeed;
 
         context.Anim.SetBool("IsGrounded", true);
     }
