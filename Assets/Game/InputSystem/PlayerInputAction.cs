@@ -136,6 +136,15 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ApplyPowerUp"",
+                    ""type"": ""Button"",
+                    ""id"": ""18a87460-ff99-4ee6-8d75-e9f12957ae69"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -160,6 +169,17 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""action"": ""Swing"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""813f29af-a370-4d0d-b376-2bd45b0fbfe5"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ApplyPowerUp"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -174,6 +194,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         m_Abilities = asset.FindActionMap("Abilities", throwIfNotFound: true);
         m_Abilities_Dash = m_Abilities.FindAction("Dash", throwIfNotFound: true);
         m_Abilities_Swing = m_Abilities.FindAction("Swing", throwIfNotFound: true);
+        m_Abilities_ApplyPowerUp = m_Abilities.FindAction("ApplyPowerUp", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -291,12 +312,14 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
     private List<IAbilitiesActions> m_AbilitiesActionsCallbackInterfaces = new List<IAbilitiesActions>();
     private readonly InputAction m_Abilities_Dash;
     private readonly InputAction m_Abilities_Swing;
+    private readonly InputAction m_Abilities_ApplyPowerUp;
     public struct AbilitiesActions
     {
         private @PlayerInputAction m_Wrapper;
         public AbilitiesActions(@PlayerInputAction wrapper) { m_Wrapper = wrapper; }
         public InputAction @Dash => m_Wrapper.m_Abilities_Dash;
         public InputAction @Swing => m_Wrapper.m_Abilities_Swing;
+        public InputAction @ApplyPowerUp => m_Wrapper.m_Abilities_ApplyPowerUp;
         public InputActionMap Get() { return m_Wrapper.m_Abilities; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -312,6 +335,9 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @Swing.started += instance.OnSwing;
             @Swing.performed += instance.OnSwing;
             @Swing.canceled += instance.OnSwing;
+            @ApplyPowerUp.started += instance.OnApplyPowerUp;
+            @ApplyPowerUp.performed += instance.OnApplyPowerUp;
+            @ApplyPowerUp.canceled += instance.OnApplyPowerUp;
         }
 
         private void UnregisterCallbacks(IAbilitiesActions instance)
@@ -322,6 +348,9 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @Swing.started -= instance.OnSwing;
             @Swing.performed -= instance.OnSwing;
             @Swing.canceled -= instance.OnSwing;
+            @ApplyPowerUp.started -= instance.OnApplyPowerUp;
+            @ApplyPowerUp.performed -= instance.OnApplyPowerUp;
+            @ApplyPowerUp.canceled -= instance.OnApplyPowerUp;
         }
 
         public void RemoveCallbacks(IAbilitiesActions instance)
@@ -348,5 +377,6 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
     {
         void OnDash(InputAction.CallbackContext context);
         void OnSwing(InputAction.CallbackContext context);
+        void OnApplyPowerUp(InputAction.CallbackContext context);
     }
 }
