@@ -25,11 +25,17 @@ public class GroundState : BaseState {
 
     public override void EnterState() {
         InitializeSubState();
+
+        context.Anim.SetBool("IsGrounded", true);
     }
 
     public override void UpdateState() {
         context.DesiredSpeed = context.MoveSpeed;
 
         CheckSwitchState();
+    }
+
+    public override void ExitState() {
+        context.Anim.SetBool("IsGrounded", false);
     }
 }

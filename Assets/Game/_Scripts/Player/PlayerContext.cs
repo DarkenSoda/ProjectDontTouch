@@ -99,6 +99,7 @@ public class PlayerContext : MonoBehaviour {
     private void FixedUpdate() {
         IsGrounded = Physics.CheckSphere(feet.position, checkSphereRadius, groundLayer);
 
+        SpeedControl();
         CurrentState.FixedUpdateStates();
     }
 
@@ -113,8 +114,8 @@ public class PlayerContext : MonoBehaviour {
     private void SpeedControl() {
         Vector3 velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
 
-        if (velocity.magnitude > CurrentSpeed) {
-            Vector3 limitedVel = velocity.normalized * CurrentSpeed;
+        if (velocity.magnitude > MoveSpeed) {
+            Vector3 limitedVel = velocity.normalized * MoveSpeed;
             rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
         }
     }

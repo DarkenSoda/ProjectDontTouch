@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class JumpState : BaseState {
@@ -18,7 +16,7 @@ public class JumpState : BaseState {
     public override void CheckSwitchState() {
         if (context.IsGrounded) {
             SwitchState(stateFactory.Ground());
-        } else if (context.RB.velocity.y < 0) {
+        } else if (!context.IsGrounded && context.RB.velocity.y < 0) {
             SwitchState(stateFactory.Fall());
         }
 
@@ -30,9 +28,9 @@ public class JumpState : BaseState {
 
         context.RequireNewJumpPress = true;
 
-        Jump();
+        context.Anim.CrossFade("Jumping Up", .15f, 0, 0);
 
-        // Jump Animation
+        Jump();
     }
 
     public override void UpdateState() {

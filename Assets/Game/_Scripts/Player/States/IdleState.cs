@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class IdleState : BaseState {
@@ -8,6 +6,12 @@ public class IdleState : BaseState {
     public override void CheckSwitchState() {
         if(context.IsMoving) {
             SwitchState(stateFactory.Move());
+        }
+    }
+
+    public override void EnterState() {
+        if (context.IsGrounded) {
+            context.RB.velocity = new Vector3(0, context.RB.velocity.y, 0);
         }
     }
 

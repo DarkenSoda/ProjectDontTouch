@@ -23,9 +23,16 @@ public class FallState : BaseState {
 
     public override void EnterState() {
         InitializeSubState();
+
+        context.Anim.SetBool("IsFalling", true);
+        context.Anim.CrossFade("Falling Idle", .15f, 0, 0);
     }
 
     public override void UpdateState() {
         CheckSwitchState();
+    }
+
+    public override void ExitState() {
+        context.Anim.SetBool("IsFalling", false);
     }
 }
