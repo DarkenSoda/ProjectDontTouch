@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Scripts.PowerUps;
 using UnityEngine.InputSystem;
+using Unity.Netcode;
 public class PlayerPowerUpSystem : MonoBehaviour
 {
     private PowerUpScriptableObject powerUpEquipedScriptableObject;
@@ -14,7 +15,7 @@ public class PlayerPowerUpSystem : MonoBehaviour
 
     private void OnApplyPowerUpPerformed(InputAction.CallbackContext ctx) {
         if (powerUpEquipedScriptableObject != null) {
-            powerUpEquipedScriptableObject.ApplyPowerUp();
+            powerUpEquipedScriptableObject.ApplyPowerUp(this.transform);
             powerUpEquipedScriptableObject = null;
         }
     }
@@ -23,7 +24,7 @@ public class PlayerPowerUpSystem : MonoBehaviour
         PowerUpBuff powerUpBuff = other.gameObject.GetComponent<PowerUpBuff>();
         if (powerUpBuff != null) {
             powerUpEquipedScriptableObject = powerUpBuff.GetPowerUpScriptableObject();
-            Destroy(other.gameObject); //switch to despawn on network.
+            other.GetComponent<NetworkObject>().Despawn(); //switch to despawn on network.
         }
     }
 }

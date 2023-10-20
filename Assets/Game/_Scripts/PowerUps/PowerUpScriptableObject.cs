@@ -10,6 +10,7 @@ namespace Scripts.PowerUps
     {
         public string powerUpName;
         public Sprite powerUpSprite;
-        public abstract void ApplyPowerUp();
+        public Transform powerUpPrefab;
+        public abstract void ApplyPowerUp(Transform playerTransform);
     }
 }
