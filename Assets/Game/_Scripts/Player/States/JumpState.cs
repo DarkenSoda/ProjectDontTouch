@@ -1,7 +1,7 @@
 using UnityEngine;
 
 public class JumpState : BaseState {
-    private bool isJumping;
+    private float startTime;    // To fix issue where jump transition to ground immediately
     public JumpState(PlayerContext context, StateFactory stateFactory) : base(context, stateFactory) {
         isRootState = true;
     }
@@ -15,12 +15,12 @@ public class JumpState : BaseState {
     }
 
     public override void CheckSwitchState() {
-        if (context.IsGrounded && !isJumping) {
-            SwitchState(stateFactory.Ground());
-        } else if (!context.IsGrounded && context.RB.velocity.y < 0) {
+        if (!context.IsGrounded && context.RB.velocity.y < 0) {
             SwitchState(stateFactory.Fall());
         } else if (context.IsDashingPressed && context.DashCooldown <= 0) {
             SwitchState(stateFactory.Dash());
+        } else if (context.IsGrounded && Time.time - startTime > .5f) {
+            SwitchState(stateFactory.Ground());
         }
 
         // WallRun and WallStand
@@ -29,21 +29,17 @@ public class JumpState : BaseState {
     public override void EnterState() {
         InitializeSubState();
 
+        Jump();
         context.RequireNewJumpPress = true;
 
         context.RB.drag = 0;
-        isJumping = true;
+        startTime = 0;
 
         context.Anim.CrossFade("Jumping Up", .15f, 0, 0);
 
-        Jump();
     }
 
     public override void UpdateState() {
-        if(context.RB.velocity.y < 0) {
-            isJumping = false;
-        }
-
         CheckSwitchState();
     }
 

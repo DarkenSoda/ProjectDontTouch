@@ -30,7 +30,8 @@ public class DashState : BaseState {
         context.DesiredSpeed = context.DashSpeed;
         startTime = Time.time;
         context.RB.drag = 0;
-        context.RB.useGravity = false;
+        context.ApplyGravity = false;
+        context.ApplyRotation = false;
 
         Dash();
 
@@ -46,7 +47,9 @@ public class DashState : BaseState {
     }
 
     public override void ExitState() {
-        context.RB.useGravity = true;
+        context.ApplyGravity = true;
+        context.ApplyRotation = true;
+
         context.DashCooldown = context.DashCooldownMax;
     }
 

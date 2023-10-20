@@ -38,6 +38,16 @@ public class PlayerContext : NetworkBehaviour {
     [SerializeField] private float dashCooldownMax;
     [SerializeField] private float dashDuration;
 
+    [Header("Wall Stand & Wall Run")]
+    [SerializeField] private float minGroundDistance;
+    [SerializeField] private float groundStandAngle;
+    [SerializeField] private float wallDetectionRadius;
+    [SerializeField] private float wallDetectionDistance;
+    [SerializeField] private float slidingGravity;
+    [SerializeField] private float wallRunSpeed;
+    [SerializeField] private float wallJumpForce;
+    [SerializeField] private LayerMask wallLayer;
+
     [Header("Ground Detection")]
     [SerializeField] private float checkSphereRadius;
     [SerializeField] private Transform feet;
@@ -70,6 +80,8 @@ public class PlayerContext : NetworkBehaviour {
     public bool IsDashingPressed { get; set; }
     public bool IsGrounded { get; set; }
     public bool IsMoving { get; set; }
+    public bool ApplyGravity { get; set; }
+    public bool ApplyRotation { get; set; }
     #endregion
 
     #region State Machine
@@ -94,13 +106,6 @@ public class PlayerContext : NetworkBehaviour {
     }
 
     private void Awake() {
-        anim = GetComponentInChildren<Animator>();
-        rb = GetComponent<Rigidbody>();
-
-        stateFactory = new StateFactory(this);
-        CurrentState = stateFactory.Ground();
-        CurrentState.EnterState();
-
         playerInput = new PlayerInputAction();
         playerInput.Movement.Jump.started += OnJump;
         playerInput.Movement.Jump.canceled += OnJump;
@@ -110,10 +115,27 @@ public class PlayerContext : NetworkBehaviour {
         playerInput.Abilities.Swing.canceled += OnSwing;
     }
 
+    private void Start() {
+        anim = GetComponentInChildren<Animator>();
+        rb = GetComponent<Rigidbody>();
+
+        stateFactory = new StateFactory(this);
+        CurrentState = stateFactory.Ground();
+        CurrentState.EnterState();
+
+        ApplyGravity = true;
+        ApplyRotation = true;
+    }
+
     private void Update() {
         IsGrounded = Physics.CheckSphere(feet.position, checkSphereRadius, groundLayer);
 
-        HandleRotation();
+        if (ApplyRotation) {
+            HandleRotation();
+        }
+
+        rb.useGravity = ApplyGravity;
+
         SpeedControl();
 
         inputVector = GetMovement();
