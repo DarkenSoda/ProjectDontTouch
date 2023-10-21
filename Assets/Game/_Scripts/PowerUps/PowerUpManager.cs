@@ -29,7 +29,7 @@ namespace Scripts.PowerUps {
         }
         private void SpawnRandomPowerUp() {
             Transform powerUp = Instantiate(powerUpScriptableObjectsList[Random.Range(0,powerUpScriptableObjectsList.Count)].powerUpPrefab,SpawnPoints[Random.Range(0,SpawnPoints.Capacity)]);
-            powerUp.GetComponent<NetworkObject>().Spawn();
+            NetworkObjectManager.SpawningObjectServerRpc(powerUp);
         }
     }
 }

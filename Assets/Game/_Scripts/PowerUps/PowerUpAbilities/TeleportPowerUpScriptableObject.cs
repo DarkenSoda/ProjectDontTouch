@@ -25,15 +25,14 @@ public class TeleportPowerUpScriptableObject : PowerUpScriptableObject
     public void TeleportFirstCast(Transform playerTransform) {
         //this cast is for casting a portal.
         portalInstance = Instantiate(portalPrefab, playerTransform.position, Quaternion.identity);
-        portalInstance.GetComponent<NetworkObject>().Spawn();
-
-        
+        NetworkObjectManager.SpawningObjectServerRpc(portalInstance);
     }
 
     public void TeleportSecondCast(Transform playerTransform) {
         //this cast is for returning to the portal whenever you want.
         Rigidbody rb = playerTransform.GetComponent<Rigidbody>();
         rb.position = portalInstance.position;
-        portalInstance.GetComponent<NetworkObject>().Despawn();
+        NetworkObjectManager.DespawningObjectServerRpc(portalInstance);
     }
+
 }
