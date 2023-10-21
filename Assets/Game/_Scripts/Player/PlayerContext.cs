@@ -12,6 +12,7 @@ public class PlayerContext : NetworkBehaviour {
     private Rigidbody rb;
     private Animator anim;
     private Vector2 inputVector;
+    public RaycastHit WallHit;
 
     [SerializeField] private Camera playerCamera;
 
@@ -40,7 +41,7 @@ public class PlayerContext : NetworkBehaviour {
 
     [Header("Wall Stand & Wall Run")]
     [SerializeField] private float minGroundDistance;
-    [SerializeField] private float groundStandAngle;
+    [SerializeField] private float wallStandAngle;
     [SerializeField] private float wallDetectionRadius;
     [SerializeField] private float wallDetectionDistance;
     [SerializeField] private float slidingGravity;
@@ -54,7 +55,7 @@ public class PlayerContext : NetworkBehaviour {
     [SerializeField] private LayerMask groundLayer;
     #endregion
 
-    #region Properties
+    #region Propertiesw
     public Animator Anim { get => anim; }
     public Rigidbody RB { get => rb; }
     public float MoveSpeed { get => moveSpeed; }
@@ -68,10 +69,14 @@ public class PlayerContext : NetworkBehaviour {
     public float VerticalDashPower { get => verticalDashPower; }
     public float RotationSpeed { get => rotationSpeed; }
     public float DashCooldownMax { get => dashCooldownMax; }
+    public float SlidingGravity { get => slidingGravity; }
+    public float WallJumpForce { get => wallJumpForce; }
+    public float WallStandAngle { get => wallStandAngle; }
     public float DashCooldown { get; set; }
     public float CurrentSpeed { get; set; }
     public float DesiredSpeed { get; set; }
     public float LastDesiredSpeed { get; set; }
+    public float AngleBetweenWall { get; set; }
     public Vector3 MoveDir { get; set; }
     public bool IsJumpPressed { get; set; }
     public bool RequireNewJumpPress { get; set; }
@@ -79,6 +84,8 @@ public class PlayerContext : NetworkBehaviour {
     public bool RequireNewSwingPress { get; set; }
     public bool IsDashingPressed { get; set; }
     public bool IsGrounded { get; set; }
+    public bool IsFarFromGround { get; set; }
+    public bool IsNearWall { get; set; }
     public bool IsMoving { get; set; }
     public bool ApplyGravity { get; set; }
     public bool ApplyRotation { get; set; }
@@ -156,6 +163,18 @@ public class PlayerContext : NetworkBehaviour {
         }
 
         LastDesiredSpeed = DesiredSpeed;
+
+
+        IsFarFromGround = !Physics.Raycast(transform.position, Vector3.down, minGroundDistance, groundLayer);
+        if (IsMoving) {
+            IsNearWall = Physics.SphereCast(transform.position, wallDetectionRadius, MoveDir.normalized, out WallHit, wallDetectionDistance, wallLayer);
+        } else {
+            IsNearWall = false;
+        }
+
+        if(IsNearWall) {
+            AngleBetweenWall = Mathf.Abs(Vector3.Angle(-WallHit.normal, MoveDir));
+        }
     }
 
     private void FixedUpdate() {
@@ -214,6 +233,8 @@ public class PlayerContext : NetworkBehaviour {
     private void OnDrawGizmos() {
         Gizmos.color = Color.magenta;
         Gizmos.DrawWireSphere(feet.position, checkSphereRadius);
+        Gizmos.color = Color.green;
+        Gizmos.DrawRay(transform.position, Vector3.down * minGroundDistance);
     }
 
     private void OnEnable() {

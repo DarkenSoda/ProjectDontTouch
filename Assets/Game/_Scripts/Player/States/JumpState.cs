@@ -1,3 +1,4 @@
+using System.Net.Mime;
 using UnityEngine;
 
 public class JumpState : BaseState {
@@ -24,6 +25,13 @@ public class JumpState : BaseState {
         }
 
         // WallRun and WallStand
+        else if (context.IsNearWall && context.IsFarFromGround) {
+            if (context.AngleBetweenWall <= context.WallStandAngle) {
+                SwitchState(stateFactory.WallStand());
+            } else {
+                // SwitchState(stateFactory.WallRun());
+            }
+        }
     }
 
     public override void EnterState() {

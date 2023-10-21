@@ -212,10 +212,10 @@ MonoBehaviour:
   verticalDashPower: 0
   dashCooldownMax: 3
   dashDuration: 0.4
-  minGroundDistance: 0
-  groundStandAngle: 0
-  wallDetectionRadius: 0
-  wallDetectionDistance: 0
+  minGroundDistance: 5
+  groundStandAngle: 15
+  wallDetectionRadius: 1
+  wallDetectionDistance: 1
   slidingGravity: 0
   wallRunSpeed: 0
   wallJumpForce: 0

@@ -21,6 +21,12 @@ public class DashState : BaseState {
     public override void CheckSwitchState() {
         if (context.IsGrounded) {
             SwitchState(stateFactory.Ground());
+        } else if (context.IsNearWall && context.IsFarFromGround) {
+            if (context.AngleBetweenWall <= context.WallStandAngle) {
+                SwitchState(stateFactory.WallStand());
+            } else {
+                // SwitchState(stateFactory.WallRun());
+            }
         } else {
             SwitchState(stateFactory.Fall());
         }
