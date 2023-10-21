@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8960bd4f01c10644f8cba285c6a85acd, type: 3}
+  m_Name: MovementSpeedPowerUpScriptableObject
+  m_EditorClassIdentifier: 
+  powerUpName: MovementSpeedPowerUp
+  powerUpSprite: {fileID: 0}
+  powerUpPrefab: {fileID: 7955827133898520826, guid: d3eef77a7e6a41747aa02344c70d1301,
+    type: 3}
+  additionalMovementSpeed: 20

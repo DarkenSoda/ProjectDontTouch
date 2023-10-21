@@ -78,6 +78,7 @@ GameObject:
   - component: {fileID: -5903041665640425910}
   - component: {fileID: 864815875492599057}
   - component: {fileID: 8027210584445127207}
+  - component: {fileID: 5234572182588898032}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -213,6 +214,8 @@ MonoBehaviour:
   dashDuration: 0.4
   minGroundDistance: 0
   groundStandAngle: 0
+  wallDetectionRadius: 0
+  wallDetectionDistance: 0
   slidingGravity: 0
   wallRunSpeed: 0
   wallJumpForce: 0
@@ -284,6 +287,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f6c0be61502bb534f922ebb746851216, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5234572182588898032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5121682058198873455}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 147c1faff6ed7bd4997591be1b23f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &8860464718840772779

@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5109c7b77ad22d643b69ff09d68c21f1, type: 3}
+  m_Name: TeleportPowerUpScriptableObject
+  m_EditorClassIdentifier: 
+  powerUpName: TeleportPowerUp
+  powerUpSprite: {fileID: 0}
+  powerUpPrefab: {fileID: 3104280236549569995, guid: 1fcb9cd5b29f16e43a58fc1f5d837d8b,
+    type: 3}
+  numberOfCasts: 2
+  portalPrefab: {fileID: 5869017732632899486, guid: cf6cd798622ef4647b6eaf8de533eefe,
+    type: 3}
