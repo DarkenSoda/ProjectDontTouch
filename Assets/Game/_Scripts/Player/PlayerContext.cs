@@ -72,6 +72,9 @@ public class PlayerContext : NetworkBehaviour {
     public float SlidingGravity { get => slidingGravity; }
     public float WallJumpForce { get => wallJumpForce; }
     public float WallStandAngle { get => wallStandAngle; }
+    public float WallRunSpeed { get => wallRunSpeed; }
+    public float WallDetectionDistance { get => wallDetectionDistance; }
+    public LayerMask WallLayer { get => wallLayer; }
     public float DashCooldown { get; set; }
     public float CurrentSpeed { get; set; }
     public float DesiredSpeed { get; set; }
@@ -166,14 +169,10 @@ public class PlayerContext : NetworkBehaviour {
 
 
         IsFarFromGround = !Physics.Raycast(transform.position, Vector3.down, minGroundDistance, groundLayer);
-        if (IsMoving) {
-            IsNearWall = Physics.SphereCast(transform.position, wallDetectionRadius, MoveDir.normalized, out WallHit, wallDetectionDistance, wallLayer);
-        } else {
-            IsNearWall = false;
-        }
-
+        IsNearWall = Physics.SphereCast(transform.position, wallDetectionRadius, visuals.forward, out WallHit, wallDetectionDistance, wallLayer);
+        
         if(IsNearWall) {
-            AngleBetweenWall = Mathf.Abs(Vector3.Angle(-WallHit.normal, MoveDir));
+            AngleBetweenWall = Mathf.Abs(Vector3.Angle(-WallHit.normal, visuals.forward));
         }
     }
 

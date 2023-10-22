@@ -1,18 +1,25 @@
-using DG.Tweening;
 using UnityEngine;
 
 public class WallStandState : BaseState {
     private bool isWallJumping;
+    private Vector3 wallNormal;
+    private Vector3 rotationDirection;
     public WallStandState(PlayerContext context, StateFactory stateFactory) : base(context, stateFactory) {
         isRootState = true;
+    }
+
+    public override void InitializeSubState() {
+        if (context.IsMoving) {
+            SetSubState(stateFactory.Move());
+        } else {
+            SetSubState(stateFactory.Idle());
+        }
     }
 
     public override void CheckSwitchState() {
         if (context.IsGrounded) {
             SwitchState(stateFactory.Ground());
-        } else if(isWallJumping && context.RB.velocity.y < 0) {
-            SwitchState(stateFactory.Fall());
-        } else if(isWallJumping && context.IsDashingPressed && context.DashCooldown < 0) {
+        } else if (isWallJumping && context.IsDashingPressed && context.DashCooldown < 0) {
             SwitchState(stateFactory.Dash());
         }
     }
@@ -22,24 +29,30 @@ public class WallStandState : BaseState {
         context.ApplyGravity = false;
         context.ApplyRotation = false;
 
-        // wall stand animation
-        context.transform.DOLookAt(context.transform.position - context.WallHit.normal, .2f, AxisConstraint.Y);
+        context.Anim.CrossFade("Wall Idle", .15f, 0, 0);
+        wallNormal = context.WallHit.normal;
+        context.RB.AddForce(-wallNormal * 100, ForceMode.Impulse);
+        context.visuals.rotation = Quaternion.LookRotation(-wallNormal);
     }
 
     public override void UpdateState() {
-        if (!isWallJumping) {
-            ApplyWallGravity();
-        }
-
         if (!isWallJumping && context.IsJumpPressed && !context.RequireNewJumpPress) {
             WallJump();
+
+            InitializeSubState();
         }
-        
-        if(isWallJumping) {
-            context.transform.DOLookAt(context.transform.position + context.WallHit.normal, .2f, AxisConstraint.Y);
+
+        if (isWallJumping) {
+            context.visuals.forward = Vector3.Slerp(context.visuals.forward, rotationDirection.normalized, context.RotationSpeed * Time.deltaTime);
         }
 
         CheckSwitchState();
+    }
+
+    public override void FixedUpdateState() {
+        if (!isWallJumping) {
+            ApplyWallGravity();
+        }
     }
 
     public override void ExitState() {
@@ -54,9 +67,11 @@ public class WallStandState : BaseState {
     private void WallJump() {
         isWallJumping = true;
         context.ApplyGravity = true;
-        Vector3 direction = Vector3.up + context.WallHit.normal;
+
+        Vector3 direction = Vector3.up + wallNormal;
+        rotationDirection = wallNormal;
         context.RB.AddForce(direction * context.WallJumpForce, ForceMode.Impulse);
 
-        // walljump animation
+        context.Anim.CrossFade("WallJump", .15f, 0, 0);
     }
 }
