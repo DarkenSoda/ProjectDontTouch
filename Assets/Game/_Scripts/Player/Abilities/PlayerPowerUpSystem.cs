@@ -4,12 +4,26 @@ using UnityEngine;
 using Scripts.PowerUps;
 using UnityEngine.InputSystem;
 using Unity.Netcode;
-public class PlayerPowerUpSystem : MonoBehaviour
+
+public class PlayerPowerUpSystem : NetworkBehaviour
 {
     private PowerUpScriptableObject powerUpEquipedScriptableObject;
     private PlayerInputAction playerInputAction;
     private int castCounter;
-    private void Start() {
+
+    public enum PlayerPowerUp {
+        Tagger,
+        Runner,
+    }
+    private PlayerPowerUp playerRole;
+
+    public override void OnNetworkSpawn()
+    {
+        if (!IsOwner) {
+            this.enabled = false;
+            return;
+        }
+
         castCounter = 1;
         playerInputAction = new();
         playerInputAction.Abilities.Enable();
@@ -22,6 +36,7 @@ public class PlayerPowerUpSystem : MonoBehaviour
             if (castCounter == powerUpEquipedScriptableObject.numberOfCasts) {
                 castCounter = 1;
                 powerUpEquipedScriptableObject = null;
+                return;
             }
             castCounter++;
         }
@@ -30,8 +45,17 @@ public class PlayerPowerUpSystem : MonoBehaviour
     private void OnTriggerEnter(Collider other) {
         PowerUpBuff powerUpBuff;
         if (other.gameObject.TryGetComponent<PowerUpBuff>(out powerUpBuff)) {
-            powerUpEquipedScriptableObject = powerUpBuff.GetPowerUpScriptableObject();
-            other.GetComponent<NetworkObject>().Despawn(); //switch to despawn on network.
+            if (powerUpBuff.GetPowerUpScriptableObject().powerUpState == playerRole) {
+                powerUpEquipedScriptableObject = powerUpBuff.GetPowerUpScriptableObject();
+                NetworkObjectManager.DestroyObjectClientRpc(other.transform);
+            }
         }
+    }
+
+    public PlayerPowerUp GetPlayerPowerUpState() {
+        return playerRole;
+    }
+    public void SetPlayerPowerUpState(PlayerPowerUp playerRole) {
+        this.playerRole = playerRole;
     }
 }
