@@ -778,10 +778,10 @@ RectTransform:
   - {fileID: 252672859}
   m_Father: {fileID: 1882333065}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 636.6667, y: -53.995667}
+  m_SizeDelta: {x: 242.66667, y: 87.99133}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1619667366
 CanvasRenderer:
@@ -1698,10 +1698,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4118428114958079449, guid: 25b0bd1c83713d44ab76eaa07a6357fa,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4237331793813064128, guid: 25b0bd1c83713d44ab76eaa07a6357fa,
         type: 3}
       propertyPath: m_Name
       value: LobbyPlayerCard (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4237331793813064128, guid: 25b0bd1c83713d44ab76eaa07a6357fa,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
