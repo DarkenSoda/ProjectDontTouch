@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Lobbies;
@@ -24,12 +25,9 @@ public class LobbyManager : MonoBehaviour {
     public event EventHandler<LobbyEventArgs> OnJoinedLobby;
     public event EventHandler<LobbyEventArgs> OnJoinedLobbyUpdate;
     public event EventHandler<LobbyEventArgs> OnKickedFromLobby;
-    public event EventHandler<LobbyEventArgs> OnLobbyGameModeChanged;
     public class LobbyEventArgs : EventArgs {
         public Lobby lobby;
     }
-
-    public event EventHandler<OnLobbyListChangedEventArgs> OnLobbyListChanged;
     public class OnLobbyListChangedEventArgs : EventArgs {
         public List<Lobby> lobbyList;
     }
@@ -54,7 +52,6 @@ public class LobbyManager : MonoBehaviour {
     }
 
     private void Update() {
-        //HandleRefreshLobbyList(); // Disabled Auto Refresh for testing with multiple builds
         HandleLobbyHeartbeat();
         HandleLobbyPolling();
     }
@@ -98,7 +95,6 @@ public class LobbyManager : MonoBehaviour {
                 OnJoinedLobbyUpdate?.Invoke(this, new LobbyEventArgs { lobby = joinedLobby });
 
                 if (!IsPlayerInLobby()) {
-                    // Player was kicked out of this lobby
                     Debug.Log("Kicked from Lobby!");
 
                     OnKickedFromLobby?.Invoke(this, new LobbyEventArgs { lobby = joinedLobby });
@@ -109,15 +105,11 @@ public class LobbyManager : MonoBehaviour {
         }
     }
 
-    public Lobby GetJoinedLobby() {
-        return joinedLobby;
-    }
-
     public bool IsLobbyHost() {
         return joinedLobby != null && joinedLobby.HostId == AuthenticationService.Instance.PlayerId;
     }
 
-    private bool IsPlayerInLobby() {
+    public bool IsPlayerInLobby() {
         if (joinedLobby != null && joinedLobby.Players != null) {
             foreach (Player player in joinedLobby.Players) {
                 if (player.Id == AuthenticationService.Instance.PlayerId) {
@@ -135,11 +127,13 @@ public class LobbyManager : MonoBehaviour {
         });
     }
 
+    public Lobby GetLobby()
+    {
+        return joinedLobby;
+    }
 
-    public async void CreateLobby(string lobbyName) {
-
+    public async Task<string> CreateLobby(string lobbyName) {
         Player player = GetPlayer();
-
         CreateLobbyOptions options = new CreateLobbyOptions {
             Player = player,
             IsPrivate = false,
@@ -148,17 +142,16 @@ public class LobbyManager : MonoBehaviour {
                 {KEY_START_GAME, new DataObject(DataObject.VisibilityOptions.Member, "0") }
             }
         };
-        Debug.Log("sasasas");
         Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, 5, options);
         joinedLobby = lobby;
         OnJoinedLobby?.Invoke(this, new LobbyEventArgs { lobby = lobby });
-
-        Debug.Log("Created Lobby " + lobby.Name);
+        Debug.Log("Created Lobby " + lobby.LobbyCode);
+        return lobby.LobbyCode;
     }
 
     public async void JoinLobbyByCode(string lobbyCode) {
         Player player = GetPlayer();
-
+        
         Lobby lobby = await LobbyService.Instance.JoinLobbyByCodeAsync(lobbyCode, new JoinLobbyByCodeOptions {
             Player = player
         });
