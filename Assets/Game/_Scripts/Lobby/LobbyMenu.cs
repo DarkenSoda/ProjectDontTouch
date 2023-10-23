@@ -31,6 +31,7 @@ public class LobbyMenu : MonoBehaviour
             lobbyMenu.SetActive(true);
             this.lobbyCode.text = lobbyCode;
             lobbyCanvas.SetActive(false);
+            LobbyManager.Instance.StartGame();
         }
     }
     void JoinLobbyClickHandler()
