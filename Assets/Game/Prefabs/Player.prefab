@@ -78,8 +78,8 @@ GameObject:
   - component: {fileID: -5903041665640425910}
   - component: {fileID: 864815875492599057}
   - component: {fileID: 8027210584445127207}
-  - component: {fileID: 5234572182588898032}
-  - component: {fileID: 893655683582133614}
+  - component: {fileID: 8991545896994087436}
+  - component: {fileID: 1206646036101702191}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -290,19 +290,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6c0be61502bb534f922ebb746851216, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &5234572182588898032
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5121682058198873455}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 147c1faff6ed7bd4997591be1b23f7d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &893655683582133614
+--- !u!114 &8991545896994087436
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -314,13 +302,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c450658f5fe4f2c43b7f513c5ff0949f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  swingForce: 20
+  swingForce: 13
   swingSpeed: 4
   layerMask:
     serializedVersion: 2
     m_Bits: 256
-  maxSwingDistance: 15
-  sphereCastRadius: 5
+  maxSwingDistance: 10
+  sphereCastRadius: 1.5
+--- !u!114 &1206646036101702191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5121682058198873455}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d428247294211d84e98b919d06421029, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TEST: {fileID: 4814356351944460375, guid: 4f883da5f7a83074c957521923411b4d, type: 3}
+  role: 0
 --- !u!1001 &8860464718840772779
 PrefabInstance:
   m_ObjectHideFlags: 0

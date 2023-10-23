@@ -9,13 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5109c7b77ad22d643b69ff09d68c21f1, type: 3}
-  m_Name: TeleportPowerUpScriptableObject
+  m_Script: {fileID: 11500000, guid: 6846373e4aa1c0e4eb13ab7cfa91f132, type: 3}
+  m_Name: TeleportPowerUp
   m_EditorClassIdentifier: 
-  powerUpName: TeleportPowerUp
+  powerUpName: Teleport
   powerUpSprite: {fileID: 0}
-  powerUpPrefab: {fileID: 3104280236549569995, guid: 1fcb9cd5b29f16e43a58fc1f5d837d8b,
-    type: 3}
   numberOfCasts: 2
-  portalPrefab: {fileID: 5869017732632899486, guid: cf6cd798622ef4647b6eaf8de533eefe,
+  portalPrefab: {fileID: 4814356351944460375, guid: 4f883da5f7a83074c957521923411b4d,
     type: 3}

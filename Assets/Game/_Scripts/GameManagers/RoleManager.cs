@@ -2,6 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum PlayerRole {
+    Tagger, 
+    Runner,
+}
+
 public class RoleManager : MonoBehaviour
 {
     // Start is called before the first frame update
