@@ -154,8 +154,6 @@ public class LobbyManager : MonoBehaviour {
         Lobby lobby = await LobbyService.Instance.JoinLobbyByCodeAsync(lobbyCode[..6], new JoinLobbyByCodeOptions {
             Player = player
         });
-        Debug.Log(lobby != null);
-        LobbyRelay.Instance.JoinRelay(lobby.Data["JoinCode"].Value);
         joinedLobby = lobby;
         OnJoinedLobby?.Invoke(this, new LobbyEventArgs { lobby = lobby });
     }
