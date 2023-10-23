@@ -17,7 +17,7 @@ public class LobbyManager : MonoBehaviour {
     public const string KEY_PLAYER_NAME = "PlayerName";
     public const string KEY_PLAYER_CHARACTER = "Character";
     public const string KEY_GAME_MODE = "GameMode";
-    public const string KEY_START_GAME = "SAMPLE_KEY";
+    public const string KEY_START_GAME = "JoinCode";
 
 
     public event EventHandler OnLeftLobby;
@@ -139,7 +139,7 @@ public class LobbyManager : MonoBehaviour {
             IsPrivate = false,
             Data = new Dictionary<string, DataObject>
             {
-                {KEY_START_GAME, new DataObject(DataObject.VisibilityOptions.Member, "0") }
+                {KEY_START_GAME, new DataObject(DataObject.VisibilityOptions.Public, "0") }
             }
         };
         Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, 5, options);
@@ -151,10 +151,11 @@ public class LobbyManager : MonoBehaviour {
 
     public async void JoinLobbyByCode(string lobbyCode) {
         Player player = GetPlayer();
-        Lobby lobby = await LobbyService.Instance.JoinLobbyByCodeAsync(lobbyCode, new JoinLobbyByCodeOptions {
+        Lobby lobby = await LobbyService.Instance.JoinLobbyByCodeAsync(lobbyCode[..6], new JoinLobbyByCodeOptions {
             Player = player
         });
         Debug.Log(lobby != null);
+        LobbyRelay.Instance.JoinRelay(lobby.Data["JoinCode"].Value);
         joinedLobby = lobby;
         OnJoinedLobby?.Invoke(this, new LobbyEventArgs { lobby = lobby });
     }

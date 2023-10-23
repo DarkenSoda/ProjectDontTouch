@@ -35,6 +35,6 @@ public class LobbyMenu : MonoBehaviour
     }
     void JoinLobbyClickHandler()
     {
-        LobbyManager.Instance.JoinLobbyByCode(lobbyCodeInput.text);
+        LobbyManager.Instance.JoinLobbyByCode(lobbyCodeInput.text.ToString());
     }
 }
