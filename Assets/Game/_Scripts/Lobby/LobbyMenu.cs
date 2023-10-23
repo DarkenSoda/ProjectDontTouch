@@ -7,6 +7,7 @@ public class LobbyMenu : MonoBehaviour
     [Header("Input Fields")]
     [SerializeField] private TextMeshProUGUI lobbyNameInput;
     [SerializeField] private TextMeshProUGUI lobbyCodeInput;
+    [SerializeField] private TextMeshProUGUI displayNameInput;
 
     [Header("Button Fields")]
     [SerializeField] private Button startLobby;
@@ -22,9 +23,9 @@ public class LobbyMenu : MonoBehaviour
         lobbyMenu.SetActive(false);
         startLobby.onClick.AddListener(StartLobbyClickHandler);
         joinLobby.onClick.AddListener(JoinLobbyClickHandler);
-        LobbyManager.Instance.Authenticate("Player 1");
     }
     async void StartLobbyClickHandler(){
+        LobbyManager.Instance.Authenticate(displayNameInput.text.ToString()[..(displayNameInput.text.Length - 1)]);
         string lobbyCode = await LobbyManager.Instance.CreateLobby(lobbyNameInput.text);
         if(!string.IsNullOrEmpty(lobbyCode))
         {
@@ -35,6 +36,7 @@ public class LobbyMenu : MonoBehaviour
     }
     void JoinLobbyClickHandler()
     {
+        LobbyManager.Instance.Authenticate(displayNameInput.text.ToString()[..(displayNameInput.text.Length - 1)]);
         LobbyManager.Instance.JoinLobbyByCode(lobbyCodeInput.text.ToString());
     }
 }

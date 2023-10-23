@@ -13,16 +13,16 @@ using TMPro;
 public class LobbyRelay : MonoBehaviour
 {
     public static LobbyRelay Instance { get; private set; }
-    private async void Start()
-    {
-        await UnityServices.InitializeAsync(); 
-           AuthenticationService.Instance.SignedIn += () => 
-           {
-              Debug.Log(" signed in " + AuthenticationService.Instance.PlayerId);
+    //private async void Start()
+    //{
+    //    await UnityServices.InitializeAsync(); 
+    //       AuthenticationService.Instance.SignedIn += () => 
+    //       {
+    //          Debug.Log(" signed in " + AuthenticationService.Instance.PlayerId);
 
-           };
-          await AuthenticationService.Instance.SignInAnonymouslyAsync();
-    }
+    //       };
+    //      await AuthenticationService.Instance.SignInAnonymouslyAsync();
+    //}
     private void Awake()
     {
         Instance = this;
