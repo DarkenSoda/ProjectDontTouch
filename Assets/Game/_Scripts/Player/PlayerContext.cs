@@ -243,4 +243,8 @@ public class PlayerContext : NetworkBehaviour {
     private void OnDisable() {
         playerInput.Disable();
     }
+
+    public Camera GetPlayerCamera() {
+        return playerCamera;
+    }
 }
