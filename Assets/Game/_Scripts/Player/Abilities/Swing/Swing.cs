@@ -21,7 +21,7 @@ public class Swing : NetworkBehaviour
     [SerializeField] private float swingSpeed;
     [SerializeField] private LayerMask layerMask;
     [SerializeField] private float maxSwingDistance;
-
+    [SerializeField] private float sphereCastRadius;
     public override void OnNetworkSpawn()
     {
         if (!IsOwner) {
@@ -38,17 +38,21 @@ public class Swing : NetworkBehaviour
 
     private void Update() {
         RaycastHit hitInfo;
-        if (Physics.SphereCast(this.transform.position, 2f, playerCam.transform.forward, out hitInfo, maxSwingDistance, layerMask)) {
+        if (Physics.SphereCast(this.transform.position, sphereCastRadius, playerCam.transform.forward, out hitInfo, maxSwingDistance, layerMask)) {     
             hitTransform = hitInfo.collider.transform;
+            hitTransform.GetComponent<SwingableObject>().Visual.gameObject.SetActive(true);
         }
         else {
+            if (hitTransform != null) {
+                hitTransform.GetComponent<SwingableObject>().Visual.gameObject.SetActive(false);
+            }
             hitTransform = null;
         }
     }
     private void OnSwingPerformed(InputAction.CallbackContext context)
     {
         if (hitTransform != null) {
-            swingDirection = hitTransform.position - this.transform.position; 
+            swingDirection = hitTransform.GetComponent<SwingableObject>().target.position - this.transform.position; 
             rb.AddForce(swingDirection * swingSpeed, ForceMode.Impulse);
         }
     }

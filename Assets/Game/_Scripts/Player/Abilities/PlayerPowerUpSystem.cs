@@ -47,15 +47,15 @@ public class PlayerPowerUpSystem : NetworkBehaviour
         if (other.gameObject.TryGetComponent<PowerUpBuff>(out powerUpBuff)) {
             if (powerUpBuff.GetPowerUpScriptableObject().powerUpState == playerRole) {
                 powerUpEquipedScriptableObject = powerUpBuff.GetPowerUpScriptableObject();
-                DestroyObjectClientRpc(other.transform.GetComponent<NetworkObject>());
+                DestroyObjectServerRpc(other.transform.GetComponent<NetworkObject>());
             }
         }
     }
 
-    [ClientRpc]
-    private void DestroyObjectClientRpc(NetworkObjectReference playerTransform) {
+    [ServerRpc(RequireOwnership = false)]
+    private void DestroyObjectServerRpc(NetworkObjectReference playerTransform) {
         if (playerTransform.TryGet(out NetworkObject playerNetworkObject)) {
-            Destroy(playerNetworkObject.GetComponent<GameObject>());
+            playerNetworkObject.Despawn();
         }
     }
 

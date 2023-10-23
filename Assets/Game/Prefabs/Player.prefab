@@ -316,12 +316,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   swingForce: 20
   swingSpeed: 4
-  playerCam: {fileID: 8855491782514441747, guid: baab6bd068366514495b81d3127dd5fc,
-    type: 3}
   layerMask:
     serializedVersion: 2
     m_Bits: 256
   maxSwingDistance: 15
+  sphereCastRadius: 5
 --- !u!1001 &8860464718840772779
 PrefabInstance:
   m_ObjectHideFlags: 0
