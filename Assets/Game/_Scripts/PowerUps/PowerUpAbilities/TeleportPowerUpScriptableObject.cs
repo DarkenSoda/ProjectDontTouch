@@ -23,6 +23,7 @@ public class TeleportPowerUpScriptableObject : PowerUpScriptableObject
     }
     public void TeleportFirstCast(Transform playerTransform) {
         //this cast is for casting a portal.
+        portalInstance = Instantiate(portalPrefab,playerTransform.position,Quaternion.identity);
         InsantiateObjectClientRpc(playerTransform.GetComponent<NetworkObject>());
     }
 
@@ -30,22 +31,21 @@ public class TeleportPowerUpScriptableObject : PowerUpScriptableObject
         //this cast is for returning to the portal whenever you want.
         Rigidbody rb = playerTransform.GetComponent<Rigidbody>();
         rb.position = portalInstance.position;
-        DestroyObjectClientRpc(portalInstance.GetComponent<NetworkObject>());
+        DestroyObjectServerRpc(portalInstance.GetComponent<NetworkObject>());
     }
 
-    [ClientRpc]
+    [ServerRpc(RequireOwnership = false)]
     private void InsantiateObjectClientRpc(NetworkObjectReference playerTransform) {
         if (playerTransform.TryGet(out NetworkObject playerNetworkObject)) {
-            portalInstance = Instantiate(portalPrefab,playerNetworkObject.GetComponent<Transform>().position,Quaternion.identity);
-            
+            playerNetworkObject.Spawn();
         }
         
     }
 
-    [ClientRpc]
-    private void DestroyObjectClientRpc(NetworkObjectReference playerTransform) {
+    [ServerRpc(RequireOwnership = false)]
+    private void DestroyObjectServerRpc(NetworkObjectReference playerTransform) {
         if (playerTransform.TryGet(out NetworkObject playerNetworkObject)) {
-            Destroy(playerNetworkObject.GetComponent<GameObject>());
+            playerNetworkObject.Despawn();
         }
     }
 }
