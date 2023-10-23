@@ -7,6 +7,7 @@ public class LobbyUI : MonoBehaviour
     void Start()
     {
         LobbyManager.Instance.OnJoinedLobby += Player_OnJoinedLobby;
+        Player_OnJoinedLobby(null, null);
     }
 
     private void Player_OnJoinedLobby(object sender, LobbyManager.LobbyEventArgs e)
