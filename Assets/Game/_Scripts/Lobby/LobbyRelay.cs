@@ -34,10 +34,11 @@ public class LobbyRelay : MonoBehaviour
         {
             Allocation allocation = await RelayService.Instance.CreateAllocationAsync(3);
             string joincode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
-            Debug.Log(joincode);
             RelayServerData relayServerData = new RelayServerData(allocation, "dtls");
+            Debug.Log(NetworkManager.Singleton != null);
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
             NetworkManager.Singleton.StartHost();
+            Debug.Log("Relay join code: " + joincode);
             return joincode;
         }
         catch (RelayServiceException e)

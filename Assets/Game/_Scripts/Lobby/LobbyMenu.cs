@@ -20,9 +20,9 @@ public class LobbyMenu : MonoBehaviour
     {
         lobbyCanvas.SetActive(true);
         lobbyMenu.SetActive(false);
-        LobbyManager.Instance.Authenticate("Player1");
         startLobby.onClick.AddListener(StartLobbyClickHandler);
         joinLobby.onClick.AddListener(JoinLobbyClickHandler);
+        LobbyManager.Instance.Authenticate("Player 1");
     }
     async void StartLobbyClickHandler(){
         string lobbyCode = await LobbyManager.Instance.CreateLobby(lobbyNameInput.text);
@@ -31,7 +31,6 @@ public class LobbyMenu : MonoBehaviour
             lobbyMenu.SetActive(true);
             this.lobbyCode.text = lobbyCode;
             lobbyCanvas.SetActive(false);
-            LobbyManager.Instance.StartGame();
         }
     }
     void JoinLobbyClickHandler()

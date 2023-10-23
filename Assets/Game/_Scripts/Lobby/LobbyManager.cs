@@ -151,13 +151,11 @@ public class LobbyManager : MonoBehaviour {
 
     public async void JoinLobbyByCode(string lobbyCode) {
         Player player = GetPlayer();
-        LobbyRelay.Instance.JoinRelay(lobbyCode);
         Lobby lobby = await LobbyService.Instance.JoinLobbyByCodeAsync(lobbyCode, new JoinLobbyByCodeOptions {
             Player = player
         });
-
+        Debug.Log(lobby != null);
         joinedLobby = lobby;
-
         OnJoinedLobby?.Invoke(this, new LobbyEventArgs { lobby = lobby });
     }
 
@@ -185,13 +183,12 @@ public class LobbyManager : MonoBehaviour {
 
                 string relayCode = await LobbyRelay.Instance.CreateRelay();
 
-                Debug.Log(relayCode);
 
                 Lobby lobby = await Lobbies.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions
                 {
                     Data = new Dictionary<string, DataObject>
                     {
-                        { KEY_START_GAME, new DataObject(DataObject.VisibilityOptions.Member, relayCode) }
+                        { KEY_START_GAME, new DataObject(DataObject.VisibilityOptions.Public, relayCode) }
                     }
                 });
             } catch(LobbyServiceException e)
