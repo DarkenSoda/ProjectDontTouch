@@ -10,6 +10,7 @@ namespace Scripts.PowerUps
         public Sprite powerUpSprite;
         public Transform powerUpPrefab;
         public int numberOfCasts;
+        public PlayerPowerUpSystem.PlayerPowerUp powerUpState;
         public abstract void ApplyPowerUp(Transform playerTransform, int castNumber);
     }
 }

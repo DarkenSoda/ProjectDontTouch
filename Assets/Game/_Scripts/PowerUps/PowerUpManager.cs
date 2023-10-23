@@ -3,33 +3,40 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 namespace Scripts.PowerUps {
-    public class PowerUpManager : MonoBehaviour
+    public class PowerUpManager : NetworkBehaviour
     {
-        private bool coroutineIsRunning;
         public static PowerUpManager powerUpManagerInstance;
         [SerializeField] private float spawnTimer;
         [SerializeField] private List<PowerUpScriptableObject> powerUpScriptableObjectsList;
         [SerializeField] private List<Transform> SpawnPoints;
+
+        private List<Transform> availableSpawnPoints;
+        
         private void Start() {
             if (powerUpManagerInstance == null)
                 powerUpManagerInstance = this;
         }
 
-        private void Update() {
-            if (!coroutineIsRunning) {
+        public override void OnNetworkSpawn()
+        {
+            if (IsServer) {
                 StartCoroutine(SpawnRandomObjectCoroutine(spawnTimer));
             }
         }
+
         private IEnumerator SpawnRandomObjectCoroutine(float time) {
-            coroutineIsRunning = true;
-            yield return new WaitForSeconds(time);
-            SpawnRandomPowerUp();
-            coroutineIsRunning = false;
+            while (true) {
+                SpawningPowerUp();
+                yield return new WaitForSeconds(time);
+            }
 
         }
-        private void SpawnRandomPowerUp() {
-            Transform powerUp = Instantiate(powerUpScriptableObjectsList[Random.Range(0,powerUpScriptableObjectsList.Count)].powerUpPrefab,SpawnPoints[Random.Range(0,SpawnPoints.Capacity)]);
-            NetworkObjectManager.SpawningObjectServerRpc(powerUp);
+       
+        private void SpawningPowerUp() {
+            Transform randomSpawnPoint = availableSpawnPoints[Random.Range(0,availableSpawnPoints.Capacity)];
+            Transform powerUp = Instantiate(powerUpScriptableObjectsList[Random.Range(0,powerUpScriptableObjectsList.Count)].powerUpPrefab,randomSpawnPoint.position,Quaternion.identity);
+            powerUp.GetComponent<NetworkObject>().Spawn();
+            availableSpawnPoints.Remove(randomSpawnPoint);
         }
     }
 }

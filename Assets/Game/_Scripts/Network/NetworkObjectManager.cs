@@ -11,12 +11,13 @@ public class NetworkObjectManager : MonoBehaviour
             Instance = this;
         }
     }
-    [ServerRpc(RequireOwnership = false)]
-    public static void SpawningObjectServerRpc(Transform Object) {
-        Object.GetComponent<NetworkObject>().Spawn();
+    [ClientRpc]
+    public static Transform InsantiateObjectClientRpc(Transform prefab, Vector3 position) {
+        return Instantiate(prefab, position, Quaternion.identity);
     }
-    [ServerRpc(RequireOwnership = false)]
-    public static void DespawningObjectServerRpc(Transform Object) {
-        Object.GetComponent<NetworkObject>().Despawn();
+    
+    [ClientRpc]
+    public static void DestroyObjectClientRpc(Transform prefab) {
+        Destroy(prefab.gameObject);
     }
 }

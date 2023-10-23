@@ -25,7 +25,7 @@ public class FallState : BaseState {
             if (context.AngleBetweenWall <= context.WallStandAngle) {
                 SwitchState(stateFactory.WallStand());
             } else {
-                // SwitchState(stateFactory.WallRun());
+                SwitchState(stateFactory.WallRun());
             }
         }
     }
