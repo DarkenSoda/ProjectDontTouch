@@ -1,13 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
 using Scripts.PowerUps;
 using UnityEngine;
+using Unity.Netcode;
 
-public class PowerUpBuff : MonoBehaviour
-{
-    [SerializeField] private PowerUpScriptableObject powerUpScriptableObject;
+public class PowerUpBuff : NetworkBehaviour {
+    public PowerUpScriptableObject PowerUpScriptableObject;
+    public PlayerRole Role;
 
-    public PowerUpScriptableObject GetPowerUpScriptableObject() {
-        return powerUpScriptableObject;
+    private void OnTriggerEnter(Collider other) {
+        PlayerPowerUp player = other.GetComponent<PlayerPowerUp>();
+        if (player == null || player.Role != Role) return;
+
+        player.currentPowerUp = PowerUpScriptableObject;
+        DespawnPowerServerRPC();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void DespawnPowerServerRPC() {
+        Destroy(gameObject);
+        GetComponent<NetworkObject>().Despawn();
     }
 }

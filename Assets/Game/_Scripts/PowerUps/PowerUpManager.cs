@@ -2,41 +2,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+
 namespace Scripts.PowerUps {
-    public class PowerUpManager : NetworkBehaviour
-    {
-        public static PowerUpManager powerUpManagerInstance;
+    public class PowerUpManager : NetworkBehaviour {
         [SerializeField] private float spawnTimer;
-        [SerializeField] private List<PowerUpScriptableObject> powerUpScriptableObjectsList;
+        [SerializeField] private List<Transform> PowerUps;
         [SerializeField] private List<Transform> SpawnPoints;
 
         private List<Transform> availableSpawnPoints;
-        
-        private void Start() {
-            if (powerUpManagerInstance == null)
-                powerUpManagerInstance = this;
-        }
 
-        public override void OnNetworkSpawn()
-        {
+        public override void OnNetworkSpawn() {
             if (IsServer) {
-                StartCoroutine(SpawnRandomObjectCoroutine(spawnTimer));
+                StartCoroutine(SpawnRandomObjectCoroutine());
             }
         }
 
-        private IEnumerator SpawnRandomObjectCoroutine(float time) {
+        private IEnumerator SpawnRandomObjectCoroutine() {
             while (true) {
                 SpawningPowerUp();
-                yield return new WaitForSeconds(time);
+                yield return new WaitForSeconds(spawnTimer);
             }
-
         }
-       
+
         private void SpawningPowerUp() {
-            Transform randomSpawnPoint = availableSpawnPoints[Random.Range(0,availableSpawnPoints.Capacity)];
-            Transform powerUp = Instantiate(powerUpScriptableObjectsList[Random.Range(0,powerUpScriptableObjectsList.Count)].powerUpPrefab,randomSpawnPoint.position,Quaternion.identity);
+            Transform powerUp = Instantiate(PowerUps[Random.Range(0, PowerUps.Count)],
+                                SpawnPoints[Random.Range(0,SpawnPoints.Count)].position, Quaternion.identity);
             powerUp.GetComponent<NetworkObject>().Spawn();
-            availableSpawnPoints.Remove(randomSpawnPoint);
         }
     }
 }
