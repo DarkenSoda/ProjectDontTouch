@@ -151,7 +151,7 @@ public class LobbyManager : MonoBehaviour {
 
     public async void JoinLobbyByCode(string lobbyCode) {
         Player player = GetPlayer();
-        
+        LobbyRelay.Instance.JoinRelay(lobbyCode);
         Lobby lobby = await LobbyService.Instance.JoinLobbyByCodeAsync(lobbyCode, new JoinLobbyByCodeOptions {
             Player = player
         });
@@ -184,6 +184,8 @@ public class LobbyManager : MonoBehaviour {
                 Debug.Log("Start Game");
 
                 string relayCode = await LobbyRelay.Instance.CreateRelay();
+
+                Debug.Log(relayCode);
 
                 Lobby lobby = await Lobbies.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions
                 {

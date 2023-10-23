@@ -13,7 +13,6 @@ using TMPro;
 public class LobbyRelay : MonoBehaviour
 {
     public static LobbyRelay Instance { get; private set; }
-    public TMP_InputField joincodetext;
     private async void Start()
     {
         await UnityServices.InitializeAsync(); 
