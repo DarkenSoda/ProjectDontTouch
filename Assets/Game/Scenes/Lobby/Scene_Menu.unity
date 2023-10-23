@@ -575,7 +575,7 @@ MonoBehaviour:
   lobbyNameInput: {fileID: 2123144350}
   lobbyCodeInput: {fileID: 1149776253}
   startLobby: {fileID: 1180062621}
-  joinLobby: {fileID: 0}
+  joinLobby: {fileID: 231560006}
   lobbyMenu: {fileID: 293607808}
   lobbyCanvas: {fileID: 1869616628}
   lobbyCode: {fileID: 137682191}
