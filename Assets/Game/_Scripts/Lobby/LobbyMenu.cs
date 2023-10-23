@@ -5,18 +5,15 @@ using UnityEngine.UI;
 
 public class LobbyMenu : MonoBehaviour
 {
-    [SerializeField] private GameObject lobbyName;
-    [SerializeField] private GameObject startLobby;
-    Button startButton;
-    TextMeshPro userInputLobbyName;
+    [SerializeField] private TextMeshProUGUI lobbyName;
+    [SerializeField] private Button startLobby;
     void Start()
     {
-        startButton = startLobby.gameObject.GetComponent<Button>();
-        userInputLobbyName = lobbyName.gameObject.GetComponent<TextMeshPro>();
-        startButton.onClick.AddListener(StartLobbyActionHandler);
+        startLobby.onClick.AddListener(StartLobbyActionHandler);
+        LobbyManager.Instance.Authenticate("Player1");
     }
     private void StartLobbyActionHandler()
     {
-        
+        LobbyManager.Instance.CreateLobby(lobbyName.text);
     }
 }
