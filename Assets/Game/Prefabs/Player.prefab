@@ -216,7 +216,7 @@ MonoBehaviour:
   wallStandAngle: 20
   wallDetectionRadius: 0.2
   wallDetectionDistance: 1
-  slidingGravity: 0
+  slidingGravity: 2
   wallRunSpeed: 500
   wallJumpForce: 12
   wallLayer:

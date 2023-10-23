@@ -24,7 +24,7 @@ public class WallRunState : BaseState {
             SwitchState(stateFactory.Ground());
         } else if (isWallJumping && context.IsDashingPressed && context.DashCooldown < 0) {
             SwitchState(stateFactory.Dash());
-        } else if(!canDetectWall) {
+        } else if (!canDetectWall) {
             SwitchState(stateFactory.Fall());
         }
     }
@@ -40,9 +40,9 @@ public class WallRunState : BaseState {
             wallForward *= -1;
         }
 
-        // context.Anim.CrossFade("Wall Idle", .15f, 0, 0);
+        context.Anim.CrossFade("Leaning", .15f, 0, 0);  // temp animation
+        context.visuals.rotation = Quaternion.LookRotation(wallNormal); // temp rotation
         context.RB.AddForce(-wallNormal * 100, ForceMode.Impulse);
-        // context.visuals.rotation = Quaternion.LookRotation(-wallNormal);
     }
 
     public override void UpdateState() {
