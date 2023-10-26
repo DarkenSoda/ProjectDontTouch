@@ -1,6 +1,8 @@
 using TMPro;
+using Unity.Services.Lobbies.Models;
 using UnityEngine;
 using UnityEngine.UI;
+using static LobbyManager;
 
 public class LobbyMenu : MonoBehaviour
 {
@@ -14,29 +16,43 @@ public class LobbyMenu : MonoBehaviour
     [SerializeField] private Button joinLobby;
 
     [Header("Lobby UI Fields")]
-    [SerializeField] private GameObject lobbyMenu;
+    [SerializeField] private GameObject lobbyUI;
     [SerializeField] private GameObject lobbyCanvas;
     [SerializeField] private TextMeshProUGUI lobbyCode;
     void Start()
     {
+        lobbyUI.SetActive(false);
         lobbyCanvas.SetActive(true);
-        lobbyMenu.SetActive(false);
         startLobby.onClick.AddListener(StartLobbyClickHandler);
         joinLobby.onClick.AddListener(JoinLobbyClickHandler);
+        LobbyManager.Instance.OnLeaveLobby += Player_OnLeaveLobby;
     }
+
+    private void Player_OnLeaveLobby(object sender, System.EventArgs e)
+    {
+        lobbyUI.SetActive(false);
+        lobbyCanvas.SetActive(true);
+    }
+
     async void StartLobbyClickHandler(){
-        LobbyManager.Instance.Authenticate(displayNameInput.text.ToString()[..(displayNameInput.text.Length - 1)]);
+        await LobbyManager.Instance.Authenticate(displayNameInput.text.ToString()[..(displayNameInput.text.Length - 1)]);
         string lobbyCode = await LobbyManager.Instance.CreateLobby(lobbyNameInput.text);
         if(!string.IsNullOrEmpty(lobbyCode))
         {
-            lobbyMenu.SetActive(true);
-            this.lobbyCode.text = lobbyCode;
+            lobbyUI.SetActive(true);
             lobbyCanvas.SetActive(false);
+            this.lobbyCode.text = lobbyCode;
         }
     }
-    void JoinLobbyClickHandler()
+    async void JoinLobbyClickHandler()
     {
-        LobbyManager.Instance.Authenticate(displayNameInput.text.ToString()[..(displayNameInput.text.Length - 1)]);
-        LobbyManager.Instance.JoinLobbyByCode(lobbyCodeInput.text.ToString());
+        await LobbyManager.Instance.Authenticate(displayNameInput.text.ToString()[..(displayNameInput.text.Length - 1)]);
+        string lobbyCode = await LobbyManager.Instance.JoinLobbyByCode(lobbyCodeInput.text.ToString());
+        if(!string.IsNullOrEmpty(lobbyCode))
+        {
+            lobbyUI.SetActive(true);
+            lobbyCanvas.SetActive(false);
+            this.lobbyCode.text = lobbyCode;
+        }
     }
 }

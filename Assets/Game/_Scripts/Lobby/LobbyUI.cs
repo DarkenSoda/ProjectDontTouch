@@ -1,21 +1,39 @@
+using System;
+using Unity.Netcode;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class LobbyUI : MonoBehaviour
+public class LobbyUI : NetworkBehaviour
 {
     [SerializeField] private LobbyPlayerCard[] playerCards;
+    [SerializeField] private Button leaveButton;
+    [SerializeField] private GameObject startGameButton;
     void Start()
     {
-        LobbyManager.Instance.OnJoinedLobby += Player_OnJoinedLobby;
-        Player_OnJoinedLobby(null, null);
+        LobbyManager.Instance.OnJoinedLobbyUpdate += Player_OnLobbyUpdate;
+        leaveButton.onClick.AddListener(LeaveButtonClickHandler);
     }
 
-    private void Player_OnJoinedLobby(object sender, LobbyManager.LobbyEventArgs e)
+    private void Player_OnLobbyUpdate(object sender, LobbyManager.LobbyEventArgs e)
     {
-        Lobby lobby = LobbyManager.Instance.GetLobby();
-        for (int i = 0; i < lobby.Players.ToArray().Length; i++)
+        Lobby lobby = e.lobby;
+        for (int i = 0; i < 5; i++)
         {
-            playerCards[i].SetPlayer(lobby.Players[i]);
+            if(i < lobby.Players.Count)
+                playerCards[i].SetPlayer(lobby.Players[i]);
+            else
+                playerCards[i].RemovePlayer();
         }
+        bool isHost = LobbyManager.Instance.IsLobbyHost();
+
+        if (isHost)
+        {
+            startGameButton.SetActive(true);
+        }
+    }
+    private void LeaveButtonClickHandler()
+    {
+        LobbyManager.Instance.LeaveLobby();
     }
 }

@@ -11,4 +11,9 @@ public class LobbyPlayerCard : MonoBehaviour
         playerPanel.SetActive(true);
         playerDisplayName.text = player.Data["PlayerName"].Value;
     }
+    public void RemovePlayer()
+    {
+        playerPanel.SetActive(false);
+        playerDisplayName.text = "Display Name";
+    }
 }
