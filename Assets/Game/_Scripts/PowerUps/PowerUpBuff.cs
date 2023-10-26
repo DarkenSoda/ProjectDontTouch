@@ -10,12 +10,20 @@ public class PowerUpBuff : NetworkBehaviour {
         PlayerPowerUp player = other.GetComponent<PlayerPowerUp>();
         if (player == null || player.Role != Role) return;
 
-        player.currentPowerUp = PowerUpScriptableObject;
-        DespawnPowerServerRPC();
+        AssignPowerClientRPC(player.GetComponent<NetworkObject>());
+    }
+
+    [ClientRpc]
+    private void AssignPowerClientRPC(NetworkObjectReference playerNetworkObj) {
+        playerNetworkObj.TryGet(out NetworkObject player);
+        if (player == null) return;
+
+        player.GetComponent<PlayerPowerUp>().currentPowerUp = PowerUpScriptableObject;
+        DestroyPowerServerRpc();
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void DespawnPowerServerRPC() {
+    private void DestroyPowerServerRpc() {
         Destroy(gameObject);
         GetComponent<NetworkObject>().Despawn();
     }

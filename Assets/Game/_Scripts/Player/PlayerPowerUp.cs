@@ -5,17 +5,12 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerPowerUp : NetworkBehaviour {
-    public Transform TEST;
     [SerializeField] private PlayerRole role;
     public PowerUpScriptableObject currentPowerUp { get; set; }
     private int castNumber = 1;
     public PlayerRole Role { get => role; }
 
     private PlayerInputAction playerInput;
-
-    public override void OnNetworkSpawn() {
-        if (!IsOwner) enabled = false;
-    }
 
     private void Awake() {
         playerInput = new PlayerInputAction();
@@ -24,8 +19,13 @@ public class PlayerPowerUp : NetworkBehaviour {
     private void UsePowerUp(InputAction.CallbackContext ctx) {
         if (!IsOwner) return;
 
+        ApplyPowerUp();
+        ApplyPowerUpServerRPC();
+    }
+
+    private void ApplyPowerUp() {
         if (currentPowerUp != null) {
-            ApplyPowerUpClientRPC();
+            currentPowerUp.ApplyPowerUp(transform, castNumber);
             if (castNumber == currentPowerUp.numberOfCasts) {
                 castNumber = 1;
                 currentPowerUp = null;
@@ -35,9 +35,16 @@ public class PlayerPowerUp : NetworkBehaviour {
         }
     }
 
+    [ServerRpc]
+    void ApplyPowerUpServerRPC() {
+        ApplyPowerUpClientRPC();
+    }
+
     [ClientRpc]
-    private void ApplyPowerUpClientRPC() {
-        currentPowerUp.ApplyPowerUp(transform, castNumber);
+    void ApplyPowerUpClientRPC() {
+        if (IsLocalPlayer) return;
+
+        ApplyPowerUp();
     }
 
     private void OnEnable() {
