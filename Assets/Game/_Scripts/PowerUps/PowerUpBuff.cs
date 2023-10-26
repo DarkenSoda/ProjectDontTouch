@@ -8,6 +8,10 @@ public class PowerUpBuff : NetworkBehaviour {
     public PowerUpBehaviour powerUpBehaviour;
     public PlayerRole Role;
 
+    public override void OnNetworkSpawn() {
+        if (!IsServer) enabled = false;
+    }
+
     private void OnTriggerEnter(Collider other) {
         PlayerPowerUp player = other.GetComponent<PlayerPowerUp>();
         if (player == null || player.Role != Role) return;
@@ -19,19 +23,13 @@ public class PowerUpBuff : NetworkBehaviour {
     private void AssignPowerClientRPC(NetworkObjectReference playerNetworkObj) {
         playerNetworkObj.TryGet(out NetworkObject player);
         if (player == null) return;
-        PowerUpBehaviour playerPowerUp = player.GetComponent<PlayerPowerUp>().currentPowerUp;
-        if (playerPowerUp != null) {
-            DestroyPowerServerRpc(playerPowerUp.GetComponent<NetworkObject>());     
+        PlayerPowerUp playerPowerUp = player.GetComponent<PlayerPowerUp>();
+        if (playerPowerUp.CurrentPowerUp != null) {
+            playerPowerUp.CurrentPowerUp.DestroyPower();
         }
-        player.GetComponent<PlayerPowerUp>().currentPowerUp = powerUpBehaviour;
+        playerPowerUp.CurrentPowerUp = powerUpBehaviour;
+        playerPowerUp.ResetCounter();
+        playerPowerUp.SetPowerUpUser();
         this.gameObject.SetActive(false);
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void DestroyPowerServerRpc(NetworkObjectReference powerUpObject) {
-        if (powerUpObject.TryGet(out NetworkObject powerUp)) {
-            Destroy(powerUp.gameObject);
-            powerUp.Despawn();
-        }
     }
 }

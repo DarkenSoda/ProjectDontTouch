@@ -6,8 +6,8 @@ using UnityEngine.InputSystem;
 
 public class PlayerPowerUp : NetworkBehaviour {
     [SerializeField] private PlayerRole role;
-    public PowerUpBehaviour currentPowerUp { get; set; }
-    private int castNumber = 1;
+    public PowerUpBehaviour CurrentPowerUp { get; set; }
+    public int CastNumber { get; private set; } = 1;
     public PlayerRole Role { get => role; }
 
     private PlayerInputAction playerInput;
@@ -20,38 +20,39 @@ public class PlayerPowerUp : NetworkBehaviour {
         if (!IsOwner) return;
 
         ApplyPowerUp();
-        ApplyPowerUpServerRPC();
+        // ApplyPowerUpServerRPC();
     }
 
     private void ApplyPowerUp() {
-        if (currentPowerUp != null) {
-            currentPowerUp.ApplyPowerUp(transform, castNumber);
-            if (castNumber == currentPowerUp.numberOfCasts) {
-                castNumber = 1;
-                currentPowerUp = null;
-                return;
-            }
-            castNumber++;
+        if (CurrentPowerUp != null) {
+            CurrentPowerUp.ApplyPowerUp();
         }
     }
 
-    [ServerRpc]
-    void ApplyPowerUpServerRPC() {
-        ApplyPowerUpClientRPC();
+    public void UpdateCounter() {
+        if (CastNumber == CurrentPowerUp.numberOfCasts) {
+            ResetCounter();
+            CurrentPowerUp = null;
+            return;
+        }
+        CastNumber++;
     }
 
-    [ClientRpc]
-    void ApplyPowerUpClientRPC() {
-        if (IsLocalPlayer) return;
+    public void ResetCounter() {
+        CastNumber = 1;
+    }
 
-        ApplyPowerUp();
+    public void SetPowerUpUser() {
+        if (CurrentPowerUp != null) {
+            CurrentPowerUp.Player = this;
+        }
     }
 
     private void OnEnable() {
         playerInput.Enable();
         playerInput.Abilities.ApplyPowerUp.performed += UsePowerUp;
     }
-//compile bro
+
     private void OnDisable() {
         playerInput.Disable();
         playerInput.Abilities.ApplyPowerUp.performed -= UsePowerUp;

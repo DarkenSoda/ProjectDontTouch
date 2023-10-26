@@ -1,28 +1,75 @@
+using System;
 using Scripts.PowerUps;
+using Unity.Netcode;
 using UnityEngine;
 
 public class TeleportPowerUpBehaviour : PowerUpBehaviour {
     public Transform portalPrefab;
     private Transform portalInstance;
-   
-    public override void ApplyPowerUp(Transform playerTransform, int castNumber) {
-        switch (castNumber) {
+
+    public void TeleportFirstCast() {
+        portalInstance = Instantiate(portalPrefab, Player.transform.position, Quaternion.identity);
+    }
+
+    public void TeleportSecondCast() {
+        Rigidbody rb = Player.GetComponent<Rigidbody>();
+        rb.position = portalInstance.position;
+
+        if (Player.IsLocalPlayer) {
+            DestroyPower();
+        }
+    }
+
+    public override void ApplyPowerUp() {
+        CastPower();
+
+        ApplyPowerUpServerRPC();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void ApplyPowerUpServerRPC() {
+        ApplyPowerUpClientRPC();
+    }
+
+    [ClientRpc]
+    void ApplyPowerUpClientRPC() {
+        if (Player.IsLocalPlayer) return;
+
+        CastPower();
+    }
+
+    private void CastPower() {
+        UpdateCast();
+        currentCast.Invoke();
+        Player.UpdateCounter();
+    }
+
+    private void UpdateCast() {
+        switch (Player.CastNumber) {
             case 1:
-                TeleportFirstCast(playerTransform);
+                currentCast = TeleportFirstCast;
                 break;
             case 2:
-                TeleportSecondCast(playerTransform);
+                currentCast = TeleportSecondCast;
                 break;
         }
     }
 
-    public void TeleportFirstCast(Transform playerTransform) {
-        portalInstance = Instantiate(portalPrefab, playerTransform.position, Quaternion.identity);
+    public override void DestroyPower() {
+        DestroyPowerServerRpc();
     }
 
-    public void TeleportSecondCast(Transform playerTransform) {
-        Rigidbody rb = playerTransform.GetComponent<Rigidbody>();
-        rb.position = portalInstance.position;
+    [ServerRpc(RequireOwnership = false)]
+    private void DestroyPowerServerRpc() {
+        if (portalInstance != null) {
+            DestroyPortalClientRpc();
+        }
+
+        Destroy(gameObject);
+    }
+
+    [ClientRpc]
+    private void DestroyPortalClientRpc() {
         Destroy(portalInstance.gameObject);
     }
 }
