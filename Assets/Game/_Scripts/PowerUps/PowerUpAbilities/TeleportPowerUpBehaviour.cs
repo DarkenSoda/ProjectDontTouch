@@ -1,8 +1,7 @@
 using Scripts.PowerUps;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "PowerUps/Teleport")]
-public class TeleportSO : PowerUpScriptableObject {
+public class TeleportPowerUpBehaviour : PowerUpBehaviour {
     public Transform portalPrefab;
     private Transform portalInstance;
    

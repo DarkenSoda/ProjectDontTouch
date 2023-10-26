@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerPowerUp : NetworkBehaviour {
     [SerializeField] private PlayerRole role;
-    public PowerUpScriptableObject currentPowerUp { get; set; }
+    public PowerUpBehaviour currentPowerUp { get; set; }
     private int castNumber = 1;
     public PlayerRole Role { get => role; }
 
@@ -51,7 +51,7 @@ public class PlayerPowerUp : NetworkBehaviour {
         playerInput.Enable();
         playerInput.Abilities.ApplyPowerUp.performed += UsePowerUp;
     }
-
+//compile bro
     private void OnDisable() {
         playerInput.Disable();
         playerInput.Abilities.ApplyPowerUp.performed -= UsePowerUp;
