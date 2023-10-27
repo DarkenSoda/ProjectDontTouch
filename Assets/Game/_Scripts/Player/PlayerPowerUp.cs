@@ -20,7 +20,6 @@ public class PlayerPowerUp : NetworkBehaviour {
         if (!IsOwner) return;
 
         ApplyPowerUp();
-        // ApplyPowerUpServerRPC();
     }
 
     private void ApplyPowerUp() {

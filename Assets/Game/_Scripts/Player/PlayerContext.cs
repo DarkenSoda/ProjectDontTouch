@@ -15,6 +15,7 @@ public class PlayerContext : NetworkBehaviour {
     public RaycastHit WallHit;
 
     [SerializeField] private Camera playerCamera;
+    public Camera PlayerCamera { get => playerCamera; }
 
     #region Variables
     [Header("References")]
@@ -55,7 +56,7 @@ public class PlayerContext : NetworkBehaviour {
     [SerializeField] private LayerMask groundLayer;
     #endregion
 
-    #region Propertiesw
+    #region Properties
     public Animator Anim { get => anim; }
     public Rigidbody RB { get => rb; }
     public float MoveSpeed { get => moveSpeed; }
@@ -242,9 +243,5 @@ public class PlayerContext : NetworkBehaviour {
 
     private void OnDisable() {
         playerInput.Disable();
-    }
-
-    public Camera GetPlayerCamera() {
-        return playerCamera;
     }
 }

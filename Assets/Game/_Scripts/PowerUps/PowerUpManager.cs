@@ -35,8 +35,7 @@ namespace Scripts.PowerUps {
             while (true) {
                 if (TaggerTurn) {
                     SpawningTaggerPowerUp();
-                }
-                else {
+                } else {
                     SpawningRunnerPowerUp();
                 }
                 TaggerTurn = !TaggerTurn;
@@ -47,14 +46,14 @@ namespace Scripts.PowerUps {
         private void SpawningTaggerPowerUp() {
             if (TaggerSpawnPoints.Count == 0) return;
 
-            Transform taggerSpawnPoint = TaggerSpawnPoints[Random.Range(0,TaggerSpawnPoints.Count)];
+            Transform taggerSpawnPoint = TaggerSpawnPoints[Random.Range(0, TaggerSpawnPoints.Count)];
             Transform powerUpObject = TaggerPowerUps[Random.Range(0, TaggerPowerUps.Count)];
             Transform powerUp = Instantiate(powerUpObject, taggerSpawnPoint.position, Quaternion.identity);
             powerUp.GetComponent<NetworkObject>().Spawn();
-            
+
             occupiedTaggersSpawnPoints.Add(taggerSpawnPoint);
             TaggerSpawnPoints.Remove(taggerSpawnPoint);
-            
+
             powerUpObject.GetComponent<PowerUpBuff>().currentSpawnPoint = taggerSpawnPoint;
         }
 
@@ -79,7 +78,7 @@ namespace Scripts.PowerUps {
         public void TaggerSpawnPointsAddItem(Transform transform) {
             TaggerSpawnPoints.Add(transform);
         }
-        
+
         public void OccupiedRunnerSpawnPointsAddItem(Transform transform) {
             occupiedRunnersSpawnPoints.Add(transform);
         }
@@ -87,6 +86,7 @@ namespace Scripts.PowerUps {
         public void OccupiedTaggerSpawnPointsAddItem(Transform transform) {
             occupiedTaggersSpawnPoints.Add(transform);
         }
+
         public void RunnerSpawnPointsRemoveItem(Transform transform) {
             RunnerSpawnPoints.Remove(transform);
         }
@@ -94,6 +94,7 @@ namespace Scripts.PowerUps {
         public void TaggerSpawnPointsRemoveItem(Transform transform) {
             TaggerSpawnPoints.Remove(transform);
         }
+
         public void OccupiedRunnerSpawnPointsRemoveItem(Transform transform) {
             occupiedRunnersSpawnPoints.Remove(transform);
         }
