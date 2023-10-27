@@ -1779,62 +1779,67 @@ PrefabInstance:
     - target: {fileID: 1401381099044729059, guid: 0fcc20ba2866a264181e4bf99452a886,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1401381099044729059, guid: 0fcc20ba2866a264181e4bf99452a886,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1401381099044729059, guid: 0fcc20ba2866a264181e4bf99452a886,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 90.7153
       objectReference: {fileID: 0}
     - target: {fileID: 1401381099044729059, guid: 0fcc20ba2866a264181e4bf99452a886,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -51.963867
       objectReference: {fileID: 0}
     - target: {fileID: 6145270955754708450, guid: 0fcc20ba2866a264181e4bf99452a886,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6145270955754708450, guid: 0fcc20ba2866a264181e4bf99452a886,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6145270955754708450, guid: 0fcc20ba2866a264181e4bf99452a886,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 170.7153
       objectReference: {fileID: 0}
     - target: {fileID: 7246256026990573815, guid: 0fcc20ba2866a264181e4bf99452a886,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7246256026990573815, guid: 0fcc20ba2866a264181e4bf99452a886,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7246256026990573815, guid: 0fcc20ba2866a264181e4bf99452a886,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 170.7153
       objectReference: {fileID: 0}
     - target: {fileID: 7246256026990573815, guid: 0fcc20ba2866a264181e4bf99452a886,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -73.927734
       objectReference: {fileID: 0}
     - target: {fileID: 7394638412246873114, guid: 0fcc20ba2866a264181e4bf99452a886,
         type: 3}
       propertyPath: m_Name
       value: NetworkManagerUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 7394638412246873114, guid: 0fcc20ba2866a264181e4bf99452a886,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8262850585851968618, guid: 0fcc20ba2866a264181e4bf99452a886,
         type: 3}
