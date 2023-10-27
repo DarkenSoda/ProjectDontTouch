@@ -6,6 +6,7 @@ using System;
 
 public class PowerUpBuff : NetworkBehaviour {
     public PowerUpBehaviour powerUpBehaviour;
+    public Transform currentSpawnPoint;
     public PlayerRole Role;
 
     public override void OnNetworkSpawn() {
@@ -16,6 +17,14 @@ public class PowerUpBuff : NetworkBehaviour {
         PlayerPowerUp player = other.GetComponent<PlayerPowerUp>();
         if (player == null || player.Role != Role) return;
 
+        if (player.Role ==  PlayerRole.Tagger) {
+            PowerUpManager.Instance.TaggerSpawnPointsAddItem(currentSpawnPoint);
+            PowerUpManager.Instance.OccupiedTaggerSpawnPointsRemoveItem(currentSpawnPoint);
+        }
+        else {
+            PowerUpManager.Instance.RunnerSpawnPointsAddItem(currentSpawnPoint);
+            PowerUpManager.Instance.OccupiedRunnerSpawnPointsRemoveItem(currentSpawnPoint);
+        }
         AssignPowerClientRPC(player.GetComponent<NetworkObject>());
     }
 

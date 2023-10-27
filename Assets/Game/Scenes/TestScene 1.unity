@@ -2279,6 +2279,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7129962470015742266, guid: a7b3a2952e47dea43a295caca359c209,
         type: 3}
+      propertyPath: RunnerPowerUps.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7129962470015742266, guid: a7b3a2952e47dea43a295caca359c209,
+        type: 3}
       propertyPath: SpawnPoints.Array.data[0]
       value: 
       objectReference: {fileID: 632912299}
@@ -2295,6 +2300,57 @@ PrefabInstance:
     - target: {fileID: 7129962470015742266, guid: a7b3a2952e47dea43a295caca359c209,
         type: 3}
       propertyPath: SpawnPoints.Array.data[3]
+      value: 
+      objectReference: {fileID: 1832176197}
+    - target: {fileID: 7129962470015742266, guid: a7b3a2952e47dea43a295caca359c209,
+        type: 3}
+      propertyPath: TaggerPowerUps.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7129962470015742266, guid: a7b3a2952e47dea43a295caca359c209,
+        type: 3}
+      propertyPath: RunnerPowerUps.Array.data[0]
+      value: 
+      objectReference: {fileID: 632912299}
+    - target: {fileID: 7129962470015742266, guid: a7b3a2952e47dea43a295caca359c209,
+        type: 3}
+      propertyPath: RunnerPowerUps.Array.data[1]
+      value: 
+      objectReference: {fileID: 497393673}
+    - target: {fileID: 7129962470015742266, guid: a7b3a2952e47dea43a295caca359c209,
+        type: 3}
+      propertyPath: RunnerSpawnPoints.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7129962470015742266, guid: a7b3a2952e47dea43a295caca359c209,
+        type: 3}
+      propertyPath: TaggerPowerUps.Array.data[0]
+      value: 
+      objectReference: {fileID: 3952384698004455112, guid: c39f706d5edb60a46a2bcf5c579a4624,
+        type: 3}
+    - target: {fileID: 7129962470015742266, guid: a7b3a2952e47dea43a295caca359c209,
+        type: 3}
+      propertyPath: TaggerSpawnPoints.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7129962470015742266, guid: a7b3a2952e47dea43a295caca359c209,
+        type: 3}
+      propertyPath: RunnerSpawnPoints.Array.data[0]
+      value: 
+      objectReference: {fileID: 632912299}
+    - target: {fileID: 7129962470015742266, guid: a7b3a2952e47dea43a295caca359c209,
+        type: 3}
+      propertyPath: RunnerSpawnPoints.Array.data[1]
+      value: 
+      objectReference: {fileID: 497393673}
+    - target: {fileID: 7129962470015742266, guid: a7b3a2952e47dea43a295caca359c209,
+        type: 3}
+      propertyPath: TaggerSpawnPoints.Array.data[0]
+      value: 
+      objectReference: {fileID: 696681781}
+    - target: {fileID: 7129962470015742266, guid: a7b3a2952e47dea43a295caca359c209,
+        type: 3}
+      propertyPath: TaggerSpawnPoints.Array.data[1]
       value: 
       objectReference: {fileID: 1832176197}
     - target: {fileID: 7312494213956774609, guid: a7b3a2952e47dea43a295caca359c209,
