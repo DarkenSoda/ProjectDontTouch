@@ -39,11 +39,13 @@ public class Swing : NetworkBehaviour
         RaycastHit hitInfo;
         if (Physics.SphereCast(this.transform.position, sphereCastRadius, playerCam.transform.forward, out hitInfo, maxSwingDistance, layerMask)) {     
             hitTransform = hitInfo.collider.transform;
+            hitTransform.GetComponent<SwingableObject>().Visual.GetComponent<SwingableObjectUI>().playerCamera = playerContext.GetPlayerCamera();
             hitTransform.GetComponent<SwingableObject>().Visual.gameObject.SetActive(true);
         }
         else {
             if (hitTransform != null) {
                 hitTransform.GetComponent<SwingableObject>().Visual.gameObject.SetActive(false);
+
             }
             hitTransform = null;
         }
