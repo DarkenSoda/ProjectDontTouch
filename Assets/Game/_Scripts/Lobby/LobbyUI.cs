@@ -8,11 +8,14 @@ public class LobbyUI : NetworkBehaviour
 {
     [SerializeField] private LobbyPlayerCard[] playerCards;
     [SerializeField] private Button leaveButton;
+    [SerializeField] private Button readyButton;
     [SerializeField] private GameObject startGameButton;
     void Start()
     {
         LobbyManager.Instance.OnJoinedLobbyUpdate += Player_OnLobbyUpdate;
         leaveButton.onClick.AddListener(LeaveButtonClickHandler);
+        readyButton.onClick.AddListener(ReadyButtonClickHandler);
+        startGameButton.GetComponent<Button>().onClick.AddListener(StartGameButtonClickHandler);
     }
 
     private void Player_OnLobbyUpdate(object sender, LobbyManager.LobbyEventArgs e)
@@ -35,5 +38,13 @@ public class LobbyUI : NetworkBehaviour
     private void LeaveButtonClickHandler()
     {
         LobbyManager.Instance.LeaveLobby();
+    }
+    private void ReadyButtonClickHandler()
+    {
+        LobbyManager.Instance.ToggleReady();
+    }
+    private void StartGameButtonClickHandler()
+    {
+        LobbyManager.Instance.StartGame();
     }
 }

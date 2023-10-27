@@ -13,6 +13,7 @@ public class LobbyManager : MonoBehaviour {
 
 
     public const string KEY_PLAYER_NAME = "PlayerName";
+    public const string KEY_PLAYER_READY = "IsReady";
     public const string KEY_START_GAME = "JoinCode";
 
 
@@ -29,6 +30,7 @@ public class LobbyManager : MonoBehaviour {
     private float lobbyPollTimer;
     private Lobby joinedLobby;
     private string playerName;
+    private int isReady;
 
 
     private void Awake() {
@@ -42,6 +44,7 @@ public class LobbyManager : MonoBehaviour {
 
     public async Task Authenticate(string playerName) {
         this.playerName = playerName;
+        this.isReady = 0;
         InitializationOptions initializationOptions = new InitializationOptions();
         initializationOptions.SetProfile(playerName);
 
@@ -54,34 +57,60 @@ public class LobbyManager : MonoBehaviour {
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
     }
 
-    private async void HandleLobbyHeartbeat() {
-        if (IsLobbyHost()) {
-            heartbeatTimer -= Time.deltaTime;
-            if (heartbeatTimer < 0f) {
-                float heartbeatTimerMax = 15f;
-                heartbeatTimer = heartbeatTimerMax;
+    public void SignOut()
+    {
+        AuthenticationService.Instance.SignedOut += () => {
+            Debug.Log("Signed out! " + AuthenticationService.Instance.PlayerId);
+        };
+        AuthenticationService.Instance.SignOut();
+    }
 
-                Debug.Log("Heartbeat");
-                await LobbyService.Instance.SendHeartbeatPingAsync(joinedLobby.Id);
+    private async void HandleLobbyHeartbeat() {
+        try
+        {
+            if (IsLobbyHost())
+            {
+                heartbeatTimer -= Time.deltaTime;
+                if (heartbeatTimer < 0f)
+                {
+                    float heartbeatTimerMax = 15f;
+                    heartbeatTimer = heartbeatTimerMax;
+
+                    Debug.Log("Heartbeat");
+                    await LobbyService.Instance.SendHeartbeatPingAsync(joinedLobby.Id);
+                }
             }
+        }
+        catch(LobbyServiceException e)
+        {
+            Debug.Log(e);
         }
     }
 
     private async void HandleLobbyPolling() {
-        if (joinedLobby != null) {
-            lobbyPollTimer -= Time.deltaTime;
-            if (lobbyPollTimer < 0f) {
-                float lobbyPollTimerMax = 1.1f;
-                lobbyPollTimer = lobbyPollTimerMax;
+        try
+        {
+            if (joinedLobby != null)
+            {
+                lobbyPollTimer -= Time.deltaTime;
+                if (lobbyPollTimer < 0f)
+                {
+                    float lobbyPollTimerMax = 1.1f;
+                    lobbyPollTimer = lobbyPollTimerMax;
 
-                joinedLobby = await LobbyService.Instance.GetLobbyAsync(joinedLobby.Id);
-                Debug.Log(joinedLobby.Players.Count);
-                OnJoinedLobbyUpdate?.Invoke(this, new LobbyEventArgs { lobby = joinedLobby });
-                if (!IsPlayerInLobby()) {
-                    Debug.Log("Kicked from Lobby!");
-                    joinedLobby = null;
+                    joinedLobby = await LobbyService.Instance.GetLobbyAsync(joinedLobby.Id);
+                    OnJoinedLobbyUpdate?.Invoke(this, new LobbyEventArgs { lobby = joinedLobby });
+                    if (!IsPlayerInLobby())
+                    {
+                        Debug.Log("Kicked from Lobby!");
+                        joinedLobby = null;
+                    }
                 }
             }
+        }
+        catch(LobbyServiceException e)
+        {
+            Debug.Log(e);
         }
     }
 
@@ -102,7 +131,8 @@ public class LobbyManager : MonoBehaviour {
 
     private Player GetPlayer() {
         return new Player(AuthenticationService.Instance.PlayerId, null, new Dictionary<string, PlayerDataObject> {
-            { KEY_PLAYER_NAME, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, playerName) }
+            { KEY_PLAYER_NAME, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, playerName) },
+            { KEY_PLAYER_READY, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, isReady.ToString()) }
         });
     }
 
@@ -116,6 +146,7 @@ public class LobbyManager : MonoBehaviour {
                 {KEY_START_GAME, new DataObject(DataObject.VisibilityOptions.Public, "0") }
             }
         };
+
         Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, 5, options);
         joinedLobby = lobby;
         OnJoinedLobbyUpdate?.Invoke(this, new LobbyEventArgs { lobby = joinedLobby });
@@ -146,39 +177,48 @@ public class LobbyManager : MonoBehaviour {
         }
     }
 
-    //public async void StartGame()
-    //{
-    //    if (IsLobbyHost())
-    //    {
-    //        try
-    //        {
-    //            Debug.Log("Start Game");
+    public async void ToggleReady()
+    {
+        if (joinedLobby == null) return;
+        this.isReady = isReady == 0 ? 1 : 0;
+        UpdatePlayerOptions options = new UpdatePlayerOptions{
+                Data = new Dictionary<string, PlayerDataObject> {
+                { KEY_PLAYER_NAME, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, playerName) },
+                { KEY_PLAYER_READY, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, isReady.ToString()) }
+            }
+        };
+        try
+        {
+            Lobby lobby = await LobbyService.Instance.UpdatePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId, options);
+            joinedLobby = lobby;
+        }catch(LobbyServiceException e)
+        {
+            Debug.Log(e);
+        }
+        OnJoinedLobbyUpdate?.Invoke(this, new LobbyEventArgs { lobby = joinedLobby });
+    }
+    public bool IsAllPlayersReady()
+    {
+        if (joinedLobby == null || joinedLobby.Players == null || joinedLobby.Players.Count != 5)
+            return false;
 
-    //            string relayCode = await LobbyRelay.Instance.CreateRelay();
-
-
-    //            Lobby lobby = await Lobbies.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions
-    //            {
-    //                Data = new Dictionary<string, DataObject>
-    //                {
-    //                    { KEY_START_GAME, new DataObject(DataObject.VisibilityOptions.Public, relayCode) }
-    //                }
-    //            });
-    //        } catch(LobbyServiceException e)
-    //        {
-    //            Debug.Log(e);
-    //        }
-    //    }
-    //}
-
-    //public async void KickPlayer(string playerId) {
-    //    if (IsLobbyHost()) {
-    //        try {
-    //            await LobbyService.Instance.RemovePlayerAsync(joinedLobby.Id, playerId);
-    //        } catch (LobbyServiceException e) {
-    //            Debug.Log(e);
-    //        }
-    //    }
-    //}
+        foreach (Player player in joinedLobby.Players)
+        {
+            if (player.Data["IsReady"].Value == "0")
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    public void StartGame()
+    {
+        Debug.Log("Attempt to start a game");
+        if (IsLobbyHost() && IsAllPlayersReady())
+        {
+            Debug.Log("Start Game");
+            // List of the players: joinedLobby.Players
+        }
+    }
 
 }
