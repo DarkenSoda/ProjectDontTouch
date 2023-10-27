@@ -204,8 +204,8 @@ public class LobbyManager : MonoBehaviour {
         if (IsLobbyHost() && IsAllPlayersReady()) {
             Debug.Log("Start Game");
             // List of the players: joinedLobby.Players
-            SceneManager.LoadScene(1);
-            // OnGameStart?.Invoke(this, EventArgs.Empty);
+            // SceneManager.LoadScene(1);
+            OnGameStart?.Invoke(this, EventArgs.Empty);
         }
     }
 }

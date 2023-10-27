@@ -4,47 +4,43 @@ using Unity.Services.Lobbies.Models;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LobbyUI : NetworkBehaviour
-{
+public class LobbyUI : MonoBehaviour {
     [SerializeField] private LobbyPlayerCard[] playerCards;
     [SerializeField] private Button leaveButton;
     [SerializeField] private Button readyButton;
     [SerializeField] private GameObject startGameButton;
-    void Start()
-    {
+    void Start() {
         LobbyManager.Instance.OnJoinedLobbyUpdate += Player_OnLobbyUpdate;
         leaveButton.onClick.AddListener(LeaveButtonClickHandler);
         readyButton.onClick.AddListener(ReadyButtonClickHandler);
         startGameButton.GetComponent<Button>().onClick.AddListener(StartGameButtonClickHandler);
     }
 
-    private void Player_OnLobbyUpdate(object sender, LobbyManager.LobbyEventArgs e)
-    {
+    private void OnDestroy() {
+        LobbyManager.Instance.OnJoinedLobbyUpdate -= Player_OnLobbyUpdate;
+    }
+
+    private void Player_OnLobbyUpdate(object sender, LobbyManager.LobbyEventArgs e) {
         Lobby lobby = e.lobby;
-        for (int i = 0; i < 5; i++)
-        {
-            if(i < lobby.Players.Count)
+        for (int i = 0; i < 5; i++) {
+            if (i < lobby.Players.Count)
                 playerCards[i].SetPlayer(lobby.Players[i]);
             else
                 playerCards[i].RemovePlayer();
         }
         bool isHost = LobbyManager.Instance.IsLobbyHost();
 
-        if (isHost)
-        {
+        if (isHost) {
             startGameButton.SetActive(true);
         }
     }
-    private void LeaveButtonClickHandler()
-    {
+    private void LeaveButtonClickHandler() {
         LobbyManager.Instance.LeaveLobby();
     }
-    private void ReadyButtonClickHandler()
-    {
+    private void ReadyButtonClickHandler() {
         LobbyManager.Instance.ToggleReady();
     }
-    private void StartGameButtonClickHandler()
-    {
+    private void StartGameButtonClickHandler() {
         LobbyManager.Instance.StartGame();
     }
 }
