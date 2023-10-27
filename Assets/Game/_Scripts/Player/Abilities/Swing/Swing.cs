@@ -6,8 +6,7 @@ using UnityEngine.InputSystem;
 using System;
 
 
-public class Swing : NetworkBehaviour
-{
+public class Swing : NetworkBehaviour {
     private PlayerInputAction playerInputAction;
     private Transform hitTransform;
     private Rigidbody rb;
@@ -21,14 +20,14 @@ public class Swing : NetworkBehaviour
     [SerializeField] private LayerMask layerMask;
     [SerializeField] private float maxSwingDistance;
     [SerializeField] private float sphereCastRadius;
-    public override void OnNetworkSpawn()
-    {
+
+    public override void OnNetworkSpawn() {
         if (!IsOwner) {
             this.enabled = false;
             return;
         }
         playerContext = GetComponent<PlayerContext>();
-        playerCam = playerContext.GetPlayerCamera();
+        playerCam = playerContext.PlayerCamera;
         rb = GetComponent<Rigidbody>();
         playerInputAction = new();
         playerInputAction.Enable();
@@ -37,21 +36,24 @@ public class Swing : NetworkBehaviour
 
     private void Update() {
         RaycastHit hitInfo;
-        if (Physics.SphereCast(this.transform.position, sphereCastRadius, playerCam.transform.forward, out hitInfo, maxSwingDistance, layerMask)) {     
+        if (Physics.SphereCast(playerCam.transform.position, sphereCastRadius, playerCam.transform.forward, out hitInfo, maxSwingDistance, layerMask)) {
             hitTransform = hitInfo.collider.transform;
+            hitTransform.GetComponent<SwingableObject>().Visual.GetComponent<SwingableObjectUI>().playerCamera = playerContext.PlayerCamera;
             hitTransform.GetComponent<SwingableObject>().Visual.gameObject.SetActive(true);
-        }
-        else {
+        } else {
             if (hitTransform != null) {
                 hitTransform.GetComponent<SwingableObject>().Visual.gameObject.SetActive(false);
+
             }
             hitTransform = null;
         }
     }
-    private void OnSwingPerformed(InputAction.CallbackContext context)
-    {
+
+    private void OnSwingPerformed(InputAction.CallbackContext context) {
         if (hitTransform != null) {
-            swingDirection = hitTransform.GetComponent<SwingableObject>().target.position - this.transform.position; 
+            swingDirection = hitTransform.GetComponent<SwingableObject>().target.position - this.transform.position;
+
+            rb.velocity = Vector3.zero;
             rb.AddForce(swingDirection * swingSpeed, ForceMode.Impulse);
         }
     }

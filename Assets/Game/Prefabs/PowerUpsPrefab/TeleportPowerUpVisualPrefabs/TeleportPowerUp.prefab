@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5150593814837275831}
   - component: {fileID: 6959830575567827756}
   - component: {fileID: 7956230120431913231}
+  - component: {fileID: -3302337577338243348}
   m_Layer: 0
   m_Name: TeleportPowerUp
   m_TagString: Untagged
@@ -118,8 +119,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9ff9f6e05168c24e86d7b01de219ea1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PowerUpScriptableObject: {fileID: 11400000, guid: 9f3577cab256cd3439552c21cd03d372,
-    type: 2}
+  powerUpBehaviour: {fileID: -3302337577338243348}
   Role: 0
 --- !u!65 &7956230120431913231
 BoxCollider:
@@ -142,3 +142,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-3302337577338243348
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5217272956038978597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6846373e4aa1c0e4eb13ab7cfa91f132, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  powerUpName: TeleportPowerUp
+  powerUpSprite: {fileID: 0}
+  numberOfCasts: 2
+  portalPrefab: {fileID: 4814356351944460375, guid: 4f883da5f7a83074c957521923411b4d,
+    type: 3}
