@@ -10,7 +10,7 @@ using Unity.Services.Lobbies.Models;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class LobbyManager : MonoBehaviour {
+public class LobbyManager : NetworkBehaviour {
     public static LobbyManager Instance { get; private set; }
 
 
@@ -205,7 +205,18 @@ public class LobbyManager : MonoBehaviour {
             Debug.Log("Start Game");
             // List of the players: joinedLobby.Players
             // SceneManager.LoadScene(1);
-            OnGameStart?.Invoke(this, EventArgs.Empty);
+            // OnGameStart?.Invoke(this, EventArgs.Empty);
+            FuncClientRPC();
+        }
+    }
+
+    [ClientRpc]
+    private void FuncClientRPC() {
+        SceneManager.LoadScene(1);
+        if(IsHost) {
+            NetworkManager.Singleton.StartHost();
+        } else {
+            NetworkManager.Singleton.StartClient();
         }
     }
 }
