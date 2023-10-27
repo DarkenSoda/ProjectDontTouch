@@ -30,7 +30,6 @@ public class LobbyMenu : MonoBehaviour
         startLobby.onClick.AddListener(StartLobbyClickHandler);
         joinLobby.onClick.AddListener(JoinLobbyClickHandler);
         LobbyManager.Instance.OnLeaveLobby += Player_OnLeaveLobby;
-        LobbyManager.Instance.OnGameStart += StartGame;
     }
 
     private void Player_OnLeaveLobby(object sender, System.EventArgs e)
@@ -82,9 +81,5 @@ public class LobbyMenu : MonoBehaviour
         {
             Debug.Log(e);
         }
-    }
-
-    public void StartGame(object sender, EventArgs e) {
-        SceneManager.LoadScene(1);
     }
 }
