@@ -5,10 +5,9 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerPowerUp : NetworkBehaviour {
-    [SerializeField] private PlayerRole role;
     public PowerUpBehaviour CurrentPowerUp { get; set; }
     public int CastNumber { get; private set; } = 1;
-    public PlayerRole Role { get => role; }
+    public PlayerRole Role { get; set; }
 
     private PlayerInputAction playerInput;
 

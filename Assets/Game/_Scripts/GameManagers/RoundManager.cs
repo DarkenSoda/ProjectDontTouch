@@ -3,22 +3,89 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using System;
-public class RoundManager : NetworkBehaviour
-{
-    private int currentRound;
+public class RoundManager : NetworkBehaviour {
+    public static RoundManager Instance { get; private set; }
+
+    private int currentRound = 1;
     private float roundTimer;
-    [Header("Round References")]
-    [SerializeField] private int maxRounds;
+    private int taggersCount;
+    private int runnersCount;
+    private bool isTaggerSelected;
+    private bool isRoundStarted;
+
     [SerializeField] private float maxRoundTime;
+    [SerializeField] private List<Transform> taggersSpawnPoint;
+    [SerializeField] private List<Transform> runnerssSpawnPoint;
+    [SerializeField] private Transform playerPrefab;
 
     public Action RoundStartAction;
     public Action RoundEndAction;
     public Action GameEndAction;
-    public override void OnNetworkSpawn()
-    {
-        roundTimer = 0f;
-        currentRound = 1;
 
+    private void Awake() {
+        if (!IsServer) enabled = false;
+
+        if (Instance != null & Instance != this) {
+            Destroy(this);
+        } else {
+            Instance = this;
+        }
     }
 
+    private void Update() {
+        if (isRoundStarted) {
+            roundTimer -= Time.deltaTime;
+            CheckRoundEnd();
+        }
+    }
+
+    public void StartRound() {
+        if (currentRound > NetworkManager.ConnectedClients.Count) {
+            GameManager.Instance.EndGame();
+            return;
+        }
+
+        foreach (var player in NetworkManager.ConnectedClientsIds) {
+            Transform playerObj;
+            if (!isTaggerSelected && !GameManager.Instance.Players[player].BeenTaggerBefore) {
+                GameManager.Instance.Players[player].BeenTaggerBefore = true;
+                isTaggerSelected = true;
+                playerObj = Instantiate(playerPrefab, taggersSpawnPoint[taggersCount++].position, Quaternion.identity);
+                playerObj.GetComponent<PlayerPowerUp>().Role = PlayerRole.Tagger;
+            } else {
+                playerObj = Instantiate(playerPrefab, runnerssSpawnPoint[runnersCount++].position, Quaternion.identity);
+                playerObj.GetComponent<PlayerPowerUp>().Role = PlayerRole.Runner;
+            }
+            playerObj.GetComponent<NetworkObject>().SpawnWithOwnership(player, true);
+        }
+
+        // 3 2 1
+        isRoundStarted = true;
+        // Start round / Allow movement / countdown Timer
+    }
+
+    public void CheckRoundEnd() {
+        if (taggersCount == 0 || runnersCount == 0 || roundTimer <= 0) {
+            EndRound();
+        }
+    }
+
+    public void EndRound() {
+        isRoundStarted = false;
+        // freeze movement
+        // Show Round winner (Tagger/Runners)
+
+        if (runnersCount == 0) {
+            // Tagger win
+        } else {
+            // Runners win
+        }
+
+        // score
+        // 3 2 1
+
+        isTaggerSelected = false;
+        currentRound++;
+        StartRound();
+    }
 }
