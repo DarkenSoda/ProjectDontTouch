@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 public class PlayerPowerUp : NetworkBehaviour {
     public PowerUpBehaviour CurrentPowerUp { get; set; }
     public int CastNumber { get; private set; } = 1;
-    public PlayerRole Role { get; set; }
+    public NetworkVariable<PlayerRole> Role { get; set; } = new NetworkVariable<PlayerRole>();
 
     private PlayerInputAction playerInput;
 

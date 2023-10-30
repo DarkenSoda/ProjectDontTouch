@@ -45,18 +45,22 @@ public class RoundManager : NetworkBehaviour {
             return;
         }
 
+        taggersCount = runnersCount = 0;
         foreach (var player in NetworkManager.ConnectedClientsIds) {
             Transform playerObj;
             if (!isTaggerSelected && !GameManager.Instance.Players[player].Value.BeenTaggerBefore) {
                 GameManager.Instance.Players[player].Value.BeenTaggerBefore = true;
                 isTaggerSelected = true;
                 playerObj = Instantiate(playerPrefab, taggersSpawnPoint[taggersCount++].position, Quaternion.identity);
-                playerObj.GetComponent<PlayerPowerUp>().Role = PlayerRole.Tagger;
+                playerObj.GetComponent<NetworkObject>().SpawnAsPlayerObject(player, true);
+
+                playerObj.GetComponent<PlayerPowerUp>().Role.Value = PlayerRole.Tagger;
             } else {
                 playerObj = Instantiate(playerPrefab, runnerssSpawnPoint[runnersCount++].position, Quaternion.identity);
-                playerObj.GetComponent<PlayerPowerUp>().Role = PlayerRole.Runner;
+                playerObj.GetComponent<NetworkObject>().SpawnAsPlayerObject(player, true);
+
+                playerObj.GetComponent<PlayerPowerUp>().Role.Value = PlayerRole.Runner;
             }
-            playerObj.GetComponent<NetworkObject>().SpawnAsPlayerObject(player, true);
         }
 
         // 3 2 1
@@ -91,7 +95,7 @@ public class RoundManager : NetworkBehaviour {
     }
 
     private void DespawnPlayers() {
-        foreach(var player in NetworkManager.ConnectedClientsList) {
+        foreach (var player in NetworkManager.ConnectedClientsList) {
             player.PlayerObject.Despawn();
         }
     }

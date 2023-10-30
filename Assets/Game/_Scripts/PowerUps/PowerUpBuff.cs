@@ -19,7 +19,7 @@ public class PowerUpBuff : NetworkBehaviour {
         List<Transform> occupiedSpawnPoints;
         List<Transform> spawnPoints;
         PlayerPowerUp player = other.GetComponent<PlayerPowerUp>();
-        if (player == null || player.Role != Role) return;
+        if (player == null || player.Role.Value != Role) return;
 
         if (Role ==  PlayerRole.Tagger) {
             occupiedSpawnPoints = PowerUpManager.Instance.occupiedTaggersSpawnPoints;
