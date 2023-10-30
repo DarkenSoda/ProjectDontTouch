@@ -2,14 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using Unity.VisualScripting;
 
 public class GameManager : NetworkBehaviour {
-    public class PlayerData {
+    public class PlayerData : INetworkSerializable {
         public float Score;
         public bool BeenTaggerBefore;
+
+        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter {
+            Score.Serialize();
+            BeenTaggerBefore.Serialize();
+        }
     }
     public static GameManager Instance { get; private set; }
-    public Dictionary<ulong, PlayerData> Players;
+    public Dictionary<ulong, NetworkVariable<PlayerData>> Players;
     private void Awake() {
         if (!IsServer) enabled = false;
 
@@ -18,6 +24,8 @@ public class GameManager : NetworkBehaviour {
         } else {
             Instance = this;
         }
+
+        Players = new Dictionary<ulong, NetworkVariable<PlayerData>>();
     }
 
     private void Start() {
@@ -27,16 +35,18 @@ public class GameManager : NetworkBehaviour {
         foreach (var player in NetworkManager.ConnectedClientsIds) {
             OnPlayerConnected(player);
         }
+
+        RoundManager.Instance.StartRound();
     }
 
     public void EndGame() {
+        Debug.Log("Game Over");
         // Show Scoreboard
         // Return to lobby
     }
 
     private void OnPlayerConnected(ulong clientId) {
-        Players.Add(clientId, new PlayerData { Score = 0, BeenTaggerBefore = false });
-        RoundManager.Instance.StartRound();
+        Players.Add(clientId, new NetworkVariable<PlayerData>(new PlayerData { Score = 0, BeenTaggerBefore = false }));
     }
 
     private void OnPlayerDisconnected(ulong clientId) {

@@ -47,8 +47,8 @@ public class RoundManager : NetworkBehaviour {
 
         foreach (var player in NetworkManager.ConnectedClientsIds) {
             Transform playerObj;
-            if (!isTaggerSelected && !GameManager.Instance.Players[player].BeenTaggerBefore) {
-                GameManager.Instance.Players[player].BeenTaggerBefore = true;
+            if (!isTaggerSelected && !GameManager.Instance.Players[player].Value.BeenTaggerBefore) {
+                GameManager.Instance.Players[player].Value.BeenTaggerBefore = true;
                 isTaggerSelected = true;
                 playerObj = Instantiate(playerPrefab, taggersSpawnPoint[taggersCount++].position, Quaternion.identity);
                 playerObj.GetComponent<PlayerPowerUp>().Role = PlayerRole.Tagger;
@@ -56,11 +56,12 @@ public class RoundManager : NetworkBehaviour {
                 playerObj = Instantiate(playerPrefab, runnerssSpawnPoint[runnersCount++].position, Quaternion.identity);
                 playerObj.GetComponent<PlayerPowerUp>().Role = PlayerRole.Runner;
             }
-            playerObj.GetComponent<NetworkObject>().SpawnWithOwnership(player, true);
+            playerObj.GetComponent<NetworkObject>().SpawnAsPlayerObject(player, true);
         }
 
         // 3 2 1
         isRoundStarted = true;
+        roundTimer = maxRoundTime;
         // Start round / Allow movement / countdown Timer
     }
 
@@ -72,7 +73,7 @@ public class RoundManager : NetworkBehaviour {
 
     public void EndRound() {
         isRoundStarted = false;
-        // freeze movement
+        DespawnPlayers();
         // Show Round winner (Tagger/Runners)
 
         if (runnersCount == 0) {
@@ -87,5 +88,11 @@ public class RoundManager : NetworkBehaviour {
         isTaggerSelected = false;
         currentRound++;
         StartRound();
+    }
+
+    private void DespawnPlayers() {
+        foreach(var player in NetworkManager.ConnectedClientsList) {
+            player.PlayerObject.Despawn();
+        }
     }
 }
