@@ -209,6 +209,7 @@ MonoBehaviour:
   jumpForce: 10
   rotationSpeed: 7
   groundDrag: 4
+  maxAttackDistance: 1
   dashPower: 20
   verticalDashPower: 0
   dashCooldownMax: 3
@@ -321,8 +322,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d428247294211d84e98b919d06421029, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TEST: {fileID: 4814356351944460375, guid: 4f883da5f7a83074c957521923411b4d, type: 3}
-  role: 0
 --- !u!1001 &8860464718840772779
 PrefabInstance:
   m_ObjectHideFlags: 0

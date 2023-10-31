@@ -32,11 +32,16 @@ public class RoundManager : NetworkBehaviour {
         }
     }
 
+
     private void Update() {
         if (isRoundStarted) {
             roundTimer -= Time.deltaTime;
             CheckRoundEnd();
         }
+    }
+
+    private void OnEnable() {
+        playerPrefab.GetComponent<PlayerContext>().OnTaggerAttackAction += OnTaggerAttack;
     }
 
     public void StartRound() {
@@ -92,6 +97,14 @@ public class RoundManager : NetworkBehaviour {
         isTaggerSelected = false;
         currentRound++;
         StartRound();
+    }
+
+    private void OnTaggerAttack(PlayerContext.playerHitEventArgs e) {
+        ulong ownerId = e.hitPlayer.GetComponent<NetworkObject>().OwnerClientId;
+        if (isTaggerSelected) {
+            GameManager.Instance.Players[ownerId].Value.IsAlive = false;
+            e.hitPlayer.GetComponent<NetworkObject>().Despawn();
+        }
     }
 
     private void DespawnPlayers() {

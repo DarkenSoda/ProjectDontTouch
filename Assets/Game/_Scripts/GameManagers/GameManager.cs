@@ -8,6 +8,7 @@ public class GameManager : NetworkBehaviour {
     public class PlayerData : INetworkSerializable {
         public float Score;
         public bool BeenTaggerBefore;
+        public bool IsAlive;
 
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter {
             Score.Serialize();

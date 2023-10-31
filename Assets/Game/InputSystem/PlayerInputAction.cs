@@ -145,6 +145,15 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Attack"",
+                    ""type"": ""Button"",
+                    ""id"": ""804d36f6-2191-4e7c-a663-ab04c4298190"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -180,6 +189,17 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""action"": ""ApplyPowerUp"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""19e71509-1784-47fd-a558-0bb79492996b"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -195,6 +215,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         m_Abilities_Dash = m_Abilities.FindAction("Dash", throwIfNotFound: true);
         m_Abilities_Swing = m_Abilities.FindAction("Swing", throwIfNotFound: true);
         m_Abilities_ApplyPowerUp = m_Abilities.FindAction("ApplyPowerUp", throwIfNotFound: true);
+        m_Abilities_Attack = m_Abilities.FindAction("Attack", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -313,6 +334,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
     private readonly InputAction m_Abilities_Dash;
     private readonly InputAction m_Abilities_Swing;
     private readonly InputAction m_Abilities_ApplyPowerUp;
+    private readonly InputAction m_Abilities_Attack;
     public struct AbilitiesActions
     {
         private @PlayerInputAction m_Wrapper;
@@ -320,6 +342,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         public InputAction @Dash => m_Wrapper.m_Abilities_Dash;
         public InputAction @Swing => m_Wrapper.m_Abilities_Swing;
         public InputAction @ApplyPowerUp => m_Wrapper.m_Abilities_ApplyPowerUp;
+        public InputAction @Attack => m_Wrapper.m_Abilities_Attack;
         public InputActionMap Get() { return m_Wrapper.m_Abilities; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -338,6 +361,9 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @ApplyPowerUp.started += instance.OnApplyPowerUp;
             @ApplyPowerUp.performed += instance.OnApplyPowerUp;
             @ApplyPowerUp.canceled += instance.OnApplyPowerUp;
+            @Attack.started += instance.OnAttack;
+            @Attack.performed += instance.OnAttack;
+            @Attack.canceled += instance.OnAttack;
         }
 
         private void UnregisterCallbacks(IAbilitiesActions instance)
@@ -351,6 +377,9 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @ApplyPowerUp.started -= instance.OnApplyPowerUp;
             @ApplyPowerUp.performed -= instance.OnApplyPowerUp;
             @ApplyPowerUp.canceled -= instance.OnApplyPowerUp;
+            @Attack.started -= instance.OnAttack;
+            @Attack.performed -= instance.OnAttack;
+            @Attack.canceled -= instance.OnAttack;
         }
 
         public void RemoveCallbacks(IAbilitiesActions instance)
@@ -378,5 +407,6 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         void OnDash(InputAction.CallbackContext context);
         void OnSwing(InputAction.CallbackContext context);
         void OnApplyPowerUp(InputAction.CallbackContext context);
+        void OnAttack(InputAction.CallbackContext context);
     }
 }
