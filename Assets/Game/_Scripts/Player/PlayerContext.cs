@@ -14,14 +14,16 @@ public class PlayerContext : NetworkBehaviour {
     private Vector2 inputVector;
     public RaycastHit WallHit;
 
-    public Action<playerHitEventArgs> OnTaggerAttackAction;
-
     public class playerHitEventArgs : EventArgs {
         public Transform hitPlayer;
     }
 
     [SerializeField] private Camera playerCamera;
     public Camera PlayerCamera { get => playerCamera; }
+
+    [HideInInspector]
+    public NetworkVariable<Vector3> cameraForward =
+            new NetworkVariable<Vector3>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
     #region Variables
     [Header("References")]
@@ -39,9 +41,6 @@ public class PlayerContext : NetworkBehaviour {
     [SerializeField] private float jumpForce;
     [SerializeField] private float rotationSpeed;
     [SerializeField] private float groundDrag;
-    
-    [Header("Attack")]
-    [SerializeField] private float maxAttackDistance;
 
     [Header("Dash")]
     [SerializeField] private float dashPower;
@@ -133,7 +132,6 @@ public class PlayerContext : NetworkBehaviour {
         playerInput.Abilities.Dash.canceled += OnDash;
         playerInput.Abilities.Swing.started += OnSwing;
         playerInput.Abilities.Swing.canceled += OnSwing;
-        playerInput.Abilities.Attack.performed += OnAttack;
     }
 
     private void Start() {
@@ -149,6 +147,7 @@ public class PlayerContext : NetworkBehaviour {
     }
 
     private void Update() {
+        cameraForward.Value = playerCamera.transform.forward;
         IsGrounded = Physics.CheckSphere(feet.position, checkSphereRadius, groundLayer);
 
         if (ApplyRotation) {
@@ -181,8 +180,8 @@ public class PlayerContext : NetworkBehaviour {
 
         IsFarFromGround = !Physics.Raycast(transform.position, Vector3.down, minGroundDistance, groundLayer);
         IsNearWall = Physics.SphereCast(transform.position, wallDetectionRadius, visuals.forward, out WallHit, wallDetectionDistance, wallLayer);
-        
-        if(IsNearWall) {
+
+        if (IsNearWall) {
             AngleBetweenWall = Mathf.Abs(Vector3.Angle(-WallHit.normal, visuals.forward));
         }
     }
@@ -240,16 +239,6 @@ public class PlayerContext : NetworkBehaviour {
         IsDashingPressed = ctx.ReadValueAsButton();
     }
 
-    private void OnAttack(InputAction.CallbackContext ctx) {
-        if (GetComponent<PlayerPowerUp>().Role.Value == PlayerRole.Tagger) {
-            RaycastHit hitInfo;
-            if (Physics.Raycast(this.transform.position,transform.forward,out hitInfo,maxAttackDistance)) {
-                OnTaggerAttackAction?.Invoke( new playerHitEventArgs {
-                    hitPlayer = hitInfo.collider.transform
-                });
-            }
-        }
-    }
     private void OnDrawGizmos() {
         Gizmos.color = Color.magenta;
         Gizmos.DrawWireSphere(feet.position, checkSphereRadius);

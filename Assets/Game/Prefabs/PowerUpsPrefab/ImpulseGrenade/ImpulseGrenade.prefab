@@ -160,4 +160,4 @@ MonoBehaviour:
   numberOfCasts: 1
   grenadePrefab: {fileID: 4548358666429863388, guid: f58e552e90bb18e41af1ab354ad4b02a,
     type: 3}
-  throwingSpeed: 20
+  throwingSpeed: 70

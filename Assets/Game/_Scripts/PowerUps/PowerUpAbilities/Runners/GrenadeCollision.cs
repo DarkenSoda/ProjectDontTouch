@@ -11,16 +11,34 @@ public class GrenadeCollision : NetworkBehaviour {
     [SerializeField] private LayerMask playerLayer;
 
     private void OnTriggerEnter(Collider other) {
-        if (IsServer && other != ColliderToIgnore) {
-            DisableObjectClientRpc();
-
-            var playersHit = Physics.OverlapSphere(transform.position, collisionRadius, playerLayer);
-            foreach (var player in playersHit) {
-                // Need to make this ClientRPC
-                player.GetComponent<Rigidbody>().AddForce((player.transform.position - transform.position) * impulseForce, ForceMode.Impulse);
+        Debug.Log("A");
+        if (other != ColliderToIgnore) {
+            Debug.Log("B");
+            if (ColliderToIgnore.GetComponent<PlayerPowerUp>().IsLocalPlayer) {
+                Debug.Log("C");
+                ApplyImpulseServerRpc();
             }
+        }
+    }
 
-            Destroy(gameObject);
+    [ServerRpc(RequireOwnership = false)]
+    private void ApplyImpulseServerRpc() {
+        Debug.Log("D");
+        DisableObjectClientRpc();                       // Disable Grenade visuals
+
+        var playersHit = Physics.OverlapSphere(transform.position, collisionRadius, playerLayer);
+        foreach (var player in playersHit) {
+            ImpulsePlayerClientRpc(player.GetComponent<NetworkObject>());
+        }
+
+        GetComponent<NetworkObject>().Despawn();        // Despawn Grenade
+    }
+
+    [ClientRpc]
+    private void ImpulsePlayerClientRpc(NetworkObjectReference playerObj) {
+        Debug.Log("E");
+        if (playerObj.TryGet(out NetworkObject player)) {
+            player.GetComponent<Rigidbody>().AddForce((player.transform.position - transform.position) * impulseForce, ForceMode.Impulse);
         }
     }
 

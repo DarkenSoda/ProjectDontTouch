@@ -13,6 +13,7 @@ public class GameManager : NetworkBehaviour {
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter {
             Score.Serialize();
             BeenTaggerBefore.Serialize();
+            IsAlive.Serialize();
         }
     }
     public static GameManager Instance { get; private set; }
@@ -47,10 +48,11 @@ public class GameManager : NetworkBehaviour {
     }
 
     private void OnPlayerConnected(ulong clientId) {
-        Players.Add(clientId, new NetworkVariable<PlayerData>(new PlayerData { Score = 0, BeenTaggerBefore = false }));
+        Players.Add(clientId, new NetworkVariable<PlayerData>(new PlayerData { Score = 0, BeenTaggerBefore = false, IsAlive = false }));
     }
 
     private void OnPlayerDisconnected(ulong clientId) {
+        RoundManager.Instance.KillPlayer(clientId);
         Players.Remove(clientId);
     }
 }

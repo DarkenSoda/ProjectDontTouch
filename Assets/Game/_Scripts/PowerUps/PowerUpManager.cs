@@ -70,12 +70,8 @@ namespace Scripts.PowerUps {
             
             powerUp.GetComponent<PowerUpBuff>().currentSpawnPoint = SpawnPointTransform;
 
-            Debug.Log(powerUp.GetComponent<PowerUpBuff>().currentSpawnPoint);
-            Debug.Log(SpawnPointTransform);
-
             occupiedSpawnPoints.Add(SpawnPointTransform);
             spawnPoints.Remove(SpawnPointTransform);
-         
         }
     }
 }

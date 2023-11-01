@@ -32,16 +32,11 @@ public class RoundManager : NetworkBehaviour {
         }
     }
 
-
     private void Update() {
         if (isRoundStarted) {
             roundTimer -= Time.deltaTime;
             CheckRoundEnd();
         }
-    }
-
-    private void OnEnable() {
-        playerPrefab.GetComponent<PlayerContext>().OnTaggerAttackAction += OnTaggerAttack;
     }
 
     public void StartRound() {
@@ -52,6 +47,8 @@ public class RoundManager : NetworkBehaviour {
 
         taggersCount = runnersCount = 0;
         foreach (var player in NetworkManager.ConnectedClientsIds) {
+            GameManager.Instance.Players[player].Value.IsAlive = true;
+
             Transform playerObj;
             if (!isTaggerSelected && !GameManager.Instance.Players[player].Value.BeenTaggerBefore) {
                 GameManager.Instance.Players[player].Value.BeenTaggerBefore = true;
@@ -99,17 +96,26 @@ public class RoundManager : NetworkBehaviour {
         StartRound();
     }
 
-    private void OnTaggerAttack(PlayerContext.playerHitEventArgs e) {
-        ulong ownerId = e.hitPlayer.GetComponent<NetworkObject>().OwnerClientId;
-        if (isTaggerSelected) {
-            GameManager.Instance.Players[ownerId].Value.IsAlive = false;
-            e.hitPlayer.GetComponent<NetworkObject>().Despawn();
+    public void KillPlayer(ulong playerId) {
+        GameManager.Instance.Players[playerId].Value.IsAlive = false;
+        NetworkObject player = NetworkManager.ConnectedClients[playerId].PlayerObject;
+
+        if (player == null) return;
+
+        if (player.GetComponent<PlayerPowerUp>().Role.Value == PlayerRole.Tagger) {
+            taggersCount--;
+        } else {
+            runnersCount--;
         }
+
+        player.Despawn();
     }
 
     private void DespawnPlayers() {
         foreach (var player in NetworkManager.ConnectedClientsList) {
-            player.PlayerObject.Despawn();
+            if (player.PlayerObject != null && player.PlayerObject.IsSpawned) {
+                player.PlayerObject.Despawn();
+            }
         }
     }
 }

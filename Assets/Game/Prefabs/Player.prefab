@@ -80,6 +80,7 @@ GameObject:
   - component: {fileID: 8027210584445127207}
   - component: {fileID: 8991545896994087436}
   - component: {fileID: 1206646036101702191}
+  - component: {fileID: 1897435853281122219}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -199,6 +200,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerCamera: {fileID: 0}
+  cameraForward:
+    m_InternalValue: {x: 0, y: 0, z: 0}
   orientation: {fileID: 4409117615150429841}
   visuals: {fileID: 9042111819587510080}
   moveSpeed: 35
@@ -209,7 +212,6 @@ MonoBehaviour:
   jumpForce: 10
   rotationSpeed: 7
   groundDrag: 4
-  maxAttackDistance: 1
   dashPower: 20
   verticalDashPower: 0
   dashCooldownMax: 3
@@ -322,6 +324,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d428247294211d84e98b919d06421029, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1897435853281122219
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5121682058198873455}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d484b9fa3b2f30a4fa38a8377696d22b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxAttackDistance: 1
 --- !u!1001 &8860464718840772779
 PrefabInstance:
   m_ObjectHideFlags: 0
