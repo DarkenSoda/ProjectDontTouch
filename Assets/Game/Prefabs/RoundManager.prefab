@@ -45,10 +45,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78a102718fa4480448bc8109699b25bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxRoundTime: 0
-  taggersSpawnPoint: []
-  runnerssSpawnPoint: []
-  playerPrefab: {fileID: 0}
+  maxRoundTime: 60
+  taggersSpawnPoint:
+  - {fileID: 0}
+  runnerssSpawnPoint:
+  - {fileID: 0}
+  - {fileID: 0}
+  playerPrefab: {fileID: 2572857921556556453, guid: d1a74028faef15749bade75bc87a44f7,
+    type: 3}
 --- !u!114 &2973035840525965549
 MonoBehaviour:
   m_ObjectHideFlags: 0

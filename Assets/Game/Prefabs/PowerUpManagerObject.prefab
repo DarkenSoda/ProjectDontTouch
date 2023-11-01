@@ -45,12 +45,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e84534676bae3fa4c84e45db40772132, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnTimer: 5
-  PowerUps:
+  occupiedTaggersSpawnPoints: []
+  occupiedRunnersSpawnPoints: []
+  spawnTimer: 10
+  TaggerPowerUps:
   - {fileID: 3952384698004455112, guid: c39f706d5edb60a46a2bcf5c579a4624, type: 3}
-  SpawnPoints:
+  RunnerPowerUps:
+  - {fileID: 1695441948551648231, guid: 3f8effb6984d1d74fb437b69ef41460e, type: 3}
+  RunnerSpawnPoints:
   - {fileID: 0}
   - {fileID: 0}
+  TaggerSpawnPoints:
   - {fileID: 0}
   - {fileID: 0}
 --- !u!114 &4773876052797649909

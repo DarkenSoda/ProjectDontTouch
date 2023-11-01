@@ -10,29 +10,24 @@ public class ImpulseGrenadePowerUp : PowerUpBehaviour {
     [Header("Grenade Speed")]
     [SerializeField] private float throwingSpeed;
 
+    private Transform grenade;
+
     public override void ApplyPowerUp() {
-        ThrowGrenade();
         ThrowGrenadeServerRpc();
 
         DestroyPower();
     }
 
     private void ThrowGrenade() {
-        Transform grenade = Instantiate(grenadePrefab, Player.transform.position, Quaternion.identity);
-        grenade.GetComponent<GrenadeCollision>().ColliderToIgnore = Player.GetComponent<Collider>();
-
         grenade.GetComponent<Rigidbody>()
             .AddForce(Player.GetComponent<PlayerContext>().cameraForward.Value * throwingSpeed, ForceMode.Impulse);
     }
 
     [ServerRpc(RequireOwnership = false)]
     private void ThrowGrenadeServerRpc() {
-        ThrowGrenadeClientRpc();
-    }
-
-    [ClientRpc]
-    private void ThrowGrenadeClientRpc() {
-        if (Player.IsLocalPlayer) return;
+        grenade = Instantiate(grenadePrefab, Player.transform.position, Quaternion.identity);
+        grenade.GetComponent<NetworkObject>().Spawn();
+        grenade.GetComponent<GrenadeCollision>().ColliderToIgnore = Player.GetComponent<Collider>();
 
         ThrowGrenade();
     }
