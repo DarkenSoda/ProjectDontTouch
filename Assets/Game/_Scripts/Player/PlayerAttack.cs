@@ -28,11 +28,19 @@ public class PlayerAttack : NetworkBehaviour {
 
     [ServerRpc]
     private void AttackServerRpc() {
-        if (GetComponent<PlayerPowerUp>().Role.Value == PlayerRole.Tagger) {
-            if (Physics.Raycast(transform.position, GetComponent<PlayerContext>().cameraForward.Value, out RaycastHit hitInfo, maxAttackDistance)) {
-                if (hitInfo.transform.GetComponent<PlayerPowerUp>().Role.Value == PlayerRole.Runner) {
-                    RoundManager.Instance.KillPlayer(hitInfo.transform.GetComponent<NetworkObject>().OwnerClientId);
+        if (GetComponent<PlayerPowerUp>().Role.Value != PlayerRole.Tagger) return;
+
+        if (Physics.Raycast(transform.position, GetComponent<PlayerContext>().cameraForward.Value, out RaycastHit hitInfo, maxAttackDistance)) {
+            if (hitInfo.transform.GetComponent<PlayerPowerUp>().Role.Value != PlayerRole.Runner) return;
+
+            if (RoundManager.Instance != null) {
+                RoundManager.Instance.KillPlayer(hitInfo.transform.GetComponent<NetworkObject>().OwnerClientId);
+            }
+            else {
+                if (TutorialManager.Instance != null) {
+                    TutorialManager.Instance.DummyPlayerServerRpc();
                 }
+                
             }
         }
     }

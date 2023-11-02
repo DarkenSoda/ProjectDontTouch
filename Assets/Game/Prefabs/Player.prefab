@@ -310,7 +310,7 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 256
-  maxSwingDistance: 10
+  maxSwingDistance: 15
   sphereCastRadius: 1.5
 --- !u!114 &1206646036101702191
 MonoBehaviour:
