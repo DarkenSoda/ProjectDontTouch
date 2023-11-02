@@ -35,12 +35,8 @@ public class PlayerAttack : NetworkBehaviour {
 
             if (RoundManager.Instance != null) {
                 RoundManager.Instance.KillPlayer(hitInfo.transform.GetComponent<NetworkObject>().OwnerClientId);
-            }
-            else {
-                if (TutorialManager.Instance != null) {
-                    TutorialManager.Instance.DummyPlayerServerRpc();
-                }
-                
+            } else if (TutorialManager.Instance != null) {
+                TutorialManager.Instance.DummyPlayerServerRpc();
             }
         }
     }

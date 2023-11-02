@@ -25,7 +25,7 @@ public class RoundManager : NetworkBehaviour {
     private void Awake() {
         if (!IsServer) enabled = false;
 
-        if (Instance != null & Instance != this) {
+        if (Instance != null && Instance != this) {
             Destroy(this);
         } else {
             Instance = this;
